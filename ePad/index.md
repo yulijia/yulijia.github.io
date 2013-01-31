@@ -15,7 +15,7 @@ It is based on the HTML5 Data URI's format.
 
 - [C/C++ syntax highlighter](http://yulijia.net/ePad/eCpp.html "eCpp")
 
-- [Python syntax highlighter](http://yulijia.net/ePad/ePthon.html "ePython")
+- [Python syntax highlighter](http://yulijia.net/ePad/ePython.html "ePython")
 
 - [Javscript syntax highlighter](http://yulijia.net/ePad/eJavascript.html "eJavascript")
  
