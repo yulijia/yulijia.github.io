@@ -8,6 +8,8 @@ It is based on the HTML5 Data URI's format.
 **reference**:      
 [One line browser notepad](http://coderwall.com/p/lhsrcq)       
 [ minikomi / editor.html](http://gist.github.com/4672169)       
+
+>##My favorite editor:      
 - [Text editor](http://yulijia.net/ePad/eText.html "eText")     
 - [Perl syntax highlighter](http://yulijia.net/ePad/ePerl.html "ePerl")     
 - [Markdown syntax highlighter](http://yulijia.net/ePad/eMarkdown.html "eMarkdown")     
