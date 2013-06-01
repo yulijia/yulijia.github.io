@@ -15,6 +15,11 @@ walk with the master,
 see through the master,  
 become the master.  
 
+**这是陶渊明《杂诗》中的两句，我在1999年练习书法时曾经写过(This is a Chinese poem, I first read it at 1999 when I learned Chinese calligraphy.)：**
+
+    盛年不重来，一日难再晨。
+    及时当勉励，岁月不待人。
+
 **Wishlist:** Star Trek
 
 
