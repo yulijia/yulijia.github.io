@@ -5,4 +5,4 @@ avatar: yes
 
 
 #Perl:      
-- [Learning Perl](http://yulijia.net/slide/learningPerl.html "Learning Perl") 
+- [Learning Perl](http://yulijia.net/slides/learningPerl.html "Learning Perl") 
