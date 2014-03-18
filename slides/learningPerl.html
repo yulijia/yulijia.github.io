@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Learning Perl</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style type="text/css">
+      /* Slideshow styles */
+
+      @import url(http://fonts.googleapis.com/css?family=Droid+Serif);
+      @import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+
+      body {
+        font-family: 'Droid Serif';
+        font-size: 20px;
+      }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: 400;
+        margin-bottom: 0;
+      }
+      h1 { font-size: 4em; }
+      h2 { font-size: 2em; }
+      h3 { font-size: 1.6em; }
+      .footnote {
+        position: absolute;
+        bottom: 3em;
+      }
+      li p { line-height: 1.25em; }
+      .red { color: #fa0000; }
+      .large { font-size: 2em; }
+      a, a > code {
+        color: rgb(249, 38, 114);
+        text-decoration: none;
+      }
+      code {
+        -moz-border-radius: 5px;
+        -web-border-radius: 5px;
+        background: #e7e8e2;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+      .pull-left {
+        float: left;
+        width: 47%;
+      }
+      .pull-right {
+        float: right;
+        width: 47%;
+      }
+      .pull-right ~ p {
+        clear: both;
+      }
+      #slideshow .slide .content code {
+        font-size: 0.8em;
+      }
+      #slideshow .slide .content pre code {
+        font-size: 0.9em;
+        padding: 15px;
+      }
+      .inverse {
+        background: #272822;
+        color: #777872;
+        text-shadow: 0 0 20px #333;
+      }
+      .inverse h1, .inverse h2 {
+        color: #f3f3f3;
+        line-height: 0.8em;
+      }
+
+      /* Slide-specific styling */
+      #slide-inverse .footnote {
+        bottom: 12px;
+        left: 20px;
+      }
+      #slide-how .slides {
+        font-size: 0.9em;
+        position: absolute;
+        top:  151px;
+        right: 140px;
+      }
+      #slide-how .slides h3 {
+        margin-top: 0.2em;
+      }
+      #slide-how .slides .first, #slide-how .slides .second {
+        padding: 1px 20px;
+        height: 90px;
+        width: 120px;
+        -moz-box-shadow: 0 0 10px #777;
+        -webkit-box-shadow: 0 0 10px #777;
+        box-shadow: 0 0 10px #777;
+      }
+      #slide-how .slides .first {
+        background: #fff;
+        position: absolute;
+        top: 20%;
+        left: 20%;
+        z-index: 1;
+      }
+      #slide-how .slides .second {
+        position: relative;
+        background: #fff;
+        z-index: 0;
+      }
+
+      /* Two-column layout */
+      .left-column {
+        color: #777;
+        width: 20%;
+        height: 92%;
+        float: left;
+      }
+        .left-column h2:last-of-type, .left-column h3:last-child {
+          color: #000;
+        }
+      .right-column {
+        width: 75%;
+        float: right;
+        padding-top: 2em;
+      }
+
+
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+name: inverse
+layout: true
+class: center, middle, inverse
+
+---
+
+Learning Perl
+===
+(5th edition)
+
+
+## Lijia Yu
+.footnote[Go to directly to [slide source](https://github.com/yulijia/)]
+
+---
+
+layout: false
+.left-column[
+  ## What is it?
+]
+.right-column[
+ I have read the **Llama** book many times, 
+ and in this year (2014) I began help friends to learn Perl language with this book. 
+ 
+ I made this slide to conclude some tips and useful script we learned.red[\*]. 
+ We use Perl in bioinformatics field, 
+ so there are some simple bioinformatics program examples in this slide.  
+ 
+ 
+.footnote[.red[\*] All chapters of the Learning Perl book are useful, 
+but we only learned the functions, structures (and others) in common usage.]
+]
+
+---
+
+.left-column[
+  ## What is it?
+  ## Chapters
+]
+.right-column[
+
+- Scalar Data
+
+- Lists and Arrays
+
+- Subroutines
+
+- [Input and Output](#6)
+
+- Hashes
+
+- In the World of Regular Expressions
+
+- Matching with Regular Expressions
+
+- Processing Text with Regular Expressions
+
+- More Control Structures
+
+- Strings and Sorting
+
+]
+
+---
+
+template: inverse
+
+# Scalar Data
+
+(Larning Perl: Chapter 2)
+---
+
+# Introduction
+$$e^{i\pi} + 1 = 0$$
+
+Test $$\LaTeX$$
+
+---
+
+template: inverse
+
+# Input and Output
+
+(Larning Perl: Chapter 5)
+---
+
+### * Input from Standard Input
+
+```perl
+while (defined($_ = <STDIN>)) {
+print "I saw $_";
+}
+
+```
+
+we’re reading the input into a variable, checking that it’s **defined**, 
+and if it is (meaning that we haven’t reached the end of the input) we’re running the body of the while loop. 
+
+### * Output to Standard Output
+
+```perl
+print @array;  # print a list of items
+print "@array";  # print a string (containing an interpolated array)
+```
+if @array holds <code>qw/ fred barney betty /</code>,
+the first one prints <code>fredbarneybetty</code>, 
+while the second prints <code>fred barney betty</code> separated by spaces.
+
+---
+**Useful script**
+
+```perl
+print <>; # source code for 'cat'
+print sort <>; # source code for 'sort'
+```
+.red[\*] Perl makes it very easy for you to read input, 
+from either the keyboard or a file, 
+with the .red[Diamond Operator] <code><></code> . 
+Each call to this operator will return one line from the current input source, 
+which can be stored in a variable for later use. 
+
+---
+
+### * Formatted Output with printf
+
+```perl
+printf "%g %g %g\n", 5/2, 51/17, 51 ** 17;  #2.5 3 1.0683e+29
+
+printf "in %d days!\n", 17.85;  #in 17 days!
+
+printf "%6d\n", 42;  #output like ~~~~42 (the ~ symbol stands for a space)
+
+printf "%10s\n", "wilma";  #looks like ~~~~~wilma
+
+printf "%-15s\n", "flintstone";  #looks like flintstone~~~~~
+
+printf "%12f\n", 6 * 7 + 2/3;  #looks like ~~~42.666667
+
+printf "%12.3f\n", 6 * 7 + 2/3;  #looks like ~~~~~~42.667
+
+printf "%12.0f\n", 6 * 7 + 2/3;  #looks like ~~~~~~~~~~43
+```
+---
+
+### * Filehandles
+
+A filehandle is the name in a Perl program for an I/O connection between your Perl process and the outside world. 
+That is, it’s the name of a connection, not necessarily the name of a file.
+Filehandles are named like other Perl identifiers (with letters, digits, and underscores,
+but they can’t start with a digit).
+
+**But there are also six special filehandle names that Perl already uses for its own pur-
+poses: STDIN, STDOUT, STDERR, DATA, ARGV, and ARGVOUT.* Although you may choose any
+filehandle name you’d like, .red[you shouldn’t choose one of those six unless you intend to
+use that one’s special properties.]**
+
+```bash
+$ ./your_program <dino >wilma
+```
+That command tells the shell that the program’s input should be read from the file
+*dino*, and the output should go to the file *wilma*.
+
+---
+
+### * Opening a Filehandle
+
+```perl
+
+open CONFIG, "dino";  # only open file dino
+open CONFIG, "<dino"; # the same as above
+
+# open dino for writing someting in this file.  
+# we’re sending the output to a new file called fred. 
+# If there’s already a file of that name, 
+# we’re asking to wipe it out and replace it with this new one.
+open BEDROCK, ">fred"; 
+
+open LOG, ">>logfile"; # open dino for appending
+```
+---
+
+### * Closing a Filehandle
+
+```perl
+close BEDROCK;
+```
+- Perl will automatically close a filehandle if you reopen it (that is, if you
+reuse the filehandle name in a new open) or if you exit the program.
+
+- In general, it’s best to close each
+filehandle soon after you’re done with it, though the end of the program often arrives
+soon enough.
+
+---
+### * Fatal Errors with die
+
+The die function prints out the message you give it (to the standard error stream, where
+such messages should go) and makes sure that your program exits with a nonzero exit
+status.
+
+```perl
+
+if ( ! open LOG, ">>logfile") {
+die "Cannot create logfile: $!";
+}
+
+```
+If the open fails, die will terminate the program and tell you that it cannot create the
+logfile. 
+
+.red[\*]Traditionally, it is 0 for success and a nonzero value for failure.
+
+.red[\*]In general, when the **system** refuses to do something we’ve requested (like
+opening a file), <code>$!</code> will give you a reason (perhaps “permission denied” or “file not
+found,” in this case). 
+
+---
+
+### I/O Example
+
+```perl
+#!/usr/bin/perl -w 
+
+$thepath="/home/yulj/project"; 
+$gen_file="$thepath/mouse.fastq";
+ 
+open DATA, $gen_file or die "cannot open file";
+
+while (<DATA>) { 
+ if($_){ 
+   $out_file="$thepath/mouse.txt";
+   
+   open LOG,">$out_file" or die "Couldn't open $out_file: $!";
+   print LOG $_; 
+   close LOG; 
+   }
+} 
+
+close DATA;
+```
+---
+name: last-page
+template: inverse
+
+# Thanks for listening. 
+# Any questions?
+
+Please send me an [email](mailto:yu@lijiayu.net)
+
+.footnote[Slideshow created using [remark](http://github.com/gnab/remark).]
+    </textarea>
+    <div id="slideshow" />
+    <script src="http://gnab.github.io/remark/downloads/remark-0.6.1.min.js" type="text/javascript"></script>
+    <!-- load MathJax -->
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&delayStartupUntil=configured"></script>
+
+    <!-- Initialize (has to go in <script> tag **without** SRC attribute) -->
+    <script type="text/javascript">
+        // Create slideshow
+        var slideshow = remark.create({
+            // This BREAKS MathJax: 
+            // highlightLanguage: 'Python'
+        
+            // You have to tag every code block with python, like so:
+            //
+            // ```python
+            // def add(a, b):
+            //     return a + b
+            // ```
+        });
+        // Setup MathJax
+        MathJax.Hub.Config({
+            tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        });
+        MathJax.Hub.Queue(function() {
+            $(MathJax.Hub.getAllJax()).map(function(index, elem) {
+                return(elem.SourceElement());
+            }).parent().addClass('has-jax');
+        });
+        
+        MathJax.Hub.Configured();
+    </script>
+  </body>
+</html>
