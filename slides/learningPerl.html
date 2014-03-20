@@ -173,7 +173,7 @@ but we only learned the functions, structures (and others) in common usage.]
 
 - [Input and Output](#6)
 
-- Hashes
+- [Hashes](#15)
 
 - In the World of Regular Expressions
 
@@ -361,7 +361,192 @@ while (<DATA>) {
 
 close DATA;
 ```
+
 ---
+
+template: inverse
+
+# Hashes
+
+(Larning Perl: Chapter 6)
+
+---
+layout: false
+
+.left-column[
+## What Is a Hash?
+]
+
+.right-column[
+A hash is a **data structure**, not unlike an array in that it can hold any number of values
+and retrieve them at will. But instead of indexing the values by number, as we did with
+arrays, we’ll look up the values by *name*. That is, the indices (here, we’ll call them
+**keys**) aren’t numbers, but instead they are arbitrary unique strings.
+![Hashes](hashes_small.png "Hashes' data structure")
+]
+
+---
+
+.left-column[
+## What Is a Hash?
+
+## Why Use a Hash?
+]
+
+.right-column[
+*Word, count of number of times that word appears*
+
+The idea here is that you want to know how often each word appears in a given
+document. We can use hashes to count the nucleotide percentage for DNA/RNA sequence.
+]
+
+---
+
+### * Hash Element Access
+
+```perl
+# This is similar to what we used for array access, 
+# but here we use curly braces instead of square brackets around the subscript (key).
+$hash{$some_key}
+
+$family_name{"fred"} = "flintstone";
+$family_name{"barney"} = "rubble";
+
+foreach $person (qw< barney fred >) {
+print "I've heard of $person $family_name{$person}.\n";
+}
+
+#The name of the hash is like any other Perl identifier (letters, digits, and underscores,
+but can’t start with a digit). 
+
+$family_name{"wilma"} = "flintstone"; # adds a new key (and value)
+$family_name{"betty"} .= $family_name{"barney"}; # creates the element if needed
+
+```
+---
+
+### * The Hash As a Whole
+
+To refer to the entire hash, use the percent sign (%) as a prefix. So, the hash we’ve been
+using for the last few pages is actually called %family_name.
+
+
+For convenience, a hash may be converted into a list, and back again. Assigning to a
+hash is a list-context assignment, where the list is made of key-value pairs:
+```perl
+%some_hash = ("foo", 35, "bar", 12.4, 2.5, "hello",
+              "wilma", 1.72e30, "betty", "bye\n");
+```
+
+The value of the hash (in a list context) is a simple list of key-value pairs:
+```perl
+@any_array = %some_hash;
+
+print "@any_array\n";
+# might give something like this:
+# betty bye (and a newline) wilma 1.72e+30 foo 35 2.5 hello bar 12.4
+```
+The order is **jumbled** because .red[Perl keeps the key-value pairs in an order that’s conven-
+ient for Perl so that it can look up any item quickly.]
+
+---
+
+### * Hash Assignment
+
+```perl
+%new_hash = %old_hash; # assignment
+%inverse_hash = reverse %any_hash; # inverse hash
+
+```
+This takes %any_hash and unwinds it into a list of key-value pairs, making a list like
+(key, value, key, value, key, value, ...). Then reverse turns that list end-for-end, making
+a list like **(value, key, value, key, value, key, ...)**. 
+
+**This will work properly only if the values in the original hash were .red[unique]—otherwise,
+we’d have duplicate keys in the new hash, and keys are always unique. Here’s the rule
+that Perl uses: the last one in wins. **
+
+---
+### * The Big Arrow
+
+When assigning a list to a hash, sometimes it’s not obvious which elements are keys
+and which are values.
+```perl
+# not clearly
+%some_hash = ("foo", 35, "bar", 12.4, 2.5, "hello",
+              "wilma", 1.72e30, "betty", "bye\n"); 
+```
+
+
+Here, it’s easy (or perhaps at least easier) to see whose name pairs with which value,
+even if we end up putting many pairs on one line. 
+```perl
+my %last_name = ( # a hash may be a lexical variable
+  "fred"    =>  "flintstone",
+  "dino"    =>  undef,
+  "barney"  =>  "rubble",
+  "betty"   =>  "rubble",
+);
+```
+
+---
+
+### * Hash Functions
+
+- The keys and values Functions
+
+```perl
+# @k will contain "a", "b", and "c", and @v will contain 1, 2, and 3
+my %hash = ("a" => 1, "b" => 2, "c" => 3);
+my @k = keys %hash;
+my @v = values %hash;
+my $count = keys %hash; # gets 3, meaning three key-value pairs
+```
+
+- The each Function
+
+In practice, the only way to use each is in a while loop, something like this:
+```perl
+while ( ($key, $value) = each %hash ) {
+  print "$key => $value\n";
+}
+```
+- The exists Function and  delete Function
+
+```perl
+if (exists $books{"dino"}) {
+  print "Hey, there's a library card for dino!\n";
+} # That is to say, exists $books{"dino"} will return a true value if (and only if) dino is
+# found in the list of keys from keys %books.
+
+delete $book{"dino"}; # after a delete, the key can’t exist in the hash, 
+#but after storing undef, the key must exist
+```
+
+---
+
+### Hash example
+
+Here is a example of double hash.
+```perl
+#! /bin/perl -w
+$hash{'orange'}{'red'} = 'red orange';
+$hash{'orange'}{'green'} = 'green orange';
+$hash{'apple'}{'red'} = 'red apple';
+$hash{'apple'}{'green'} = 'green apple';
+$kkk=\%hash;
+foreach $fruit (keys %hash)
+{
+    foreach $color (keys %{$hash{$fruit}})
+    {
+        print $hash{$fruit}{$color},"\n";
+        print $kkk->{$fruit}->{$color} , "\n";
+    }
+}
+```
+
+---
+
 name: last-page
 template: inverse
 
