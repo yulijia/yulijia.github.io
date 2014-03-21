@@ -169,11 +169,11 @@ but we only learned the functions, structures (and others) in common usage.]
 
 - Lists and Arrays
 
-- Subroutines
+- [Subroutines](#6)
 
-- [Input and Output](#6)
+- [Input and Output](#16)
 
-- [Hashes](#15)
+- [Hashes](#25)
 
 - In the World of Regular Expressions
 
@@ -200,6 +200,185 @@ template: inverse
 $$e^{i\pi} + 1 = 0$$
 
 Test $$\LaTeX$$
+
+---
+
+template: inverse
+
+# Subroutines
+
+(Larning Perl: Chapter 4)
+
+---
+
+### * Defining a Subroutine
+
+To define your own subroutine, use the keyword <code>sub</code>, the name of the subroutine
+(without the ampersand), then the indented block of code (in curly braces), which
+makes up the body of the subroutine, 
+
+```perl
+sub marine {
+  $n += 1; # Global variable $n
+  print "Hello, sailor number $n!\n";
+}
+```
+### * Invoking a Subroutine
+
+```perl
+&marine; # or just marine;
+```
+
+---
+
+### * Return Values
+
+As Perl is chugging along in a subroutine, it is calculating values as part of its series of actions. 
+Whatever calculation is last performed in a subroutine is automatically also the return value.
+
+```perl
+sub sum_of_fred_and_barney {
+  print "Hey, you called the sum_of_fred_and_barney subroutine!\n";
+  $fred + $barney; # That's the return value
+}
+
+# This subroutine returns the larger value of $fred or $barney
+sub larger_of_fred_or_barney {
+  if ($fred > $barney) {
+    $fred;
+  } else {
+    $barney;
+  }
+}
+
+```
+
+---
+
+### * Arguments
+
+Perl has subroutine arguments. To pass an argument list to the subroutine,
+simply place the list expression, in parentheses, after the subroutine invocation.
+
+```perl
+$n = &max(10,15); # This sub call has two parameters
+
+sub max {
+  # Compare this to &larger_of_fred_or_barney
+  if ($_[0] > $_[1]) {
+    $_[0];
+  } else {
+    $_[1];
+  }
+}
+
+$n = &max(10, 15, 27); # Oops! can not compare
+```
+
+---
+
+### * Private Variables in Subroutines
+
+By default, all variables in Perl are global variables; that is, 
+they are accessible from every part of the program. 
+But you can create private variables called lexical variables
+at any time with the <code>my</code> operator:
+
+```perl
+sub max {
+  my($m, $n); # new, private variables for this block
+  ($m, $n) = @_; # give names to the parameters
+  if ($m > $n) { $m } else { $n }
+} # These variables are private (or scoped) to the enclosing block; 
+# any other $m or $n is totally unaffected by these two. 
+
+my($m, $n) = @_; # Name the subroutine parameters
+```
+
+---
+
+### * Notes on Lexical (my) Variables
+.left-column[
+### The .red[my] operator doesn’t change the context of an assignment
+]
+
+.right-column[
+
+```perl
+my($num) = @_; # list context, same as ($num) = @_;
+my $num = @_; # scalar context, same as $num = @_;
+```
+In the first one, $num gets the first parameter, as a list-context assignment; in the second,
+it gets the number of parameters, in a scalar context. 
+]
+
+---
+
+### * Notes on Lexical (my) Variables
+.left-column[
+### The .red[my] operator doesn’t change the context of an assignment
+### Without the parentheses, .red[my] only declares a single lexical variable
+]
+
+.right-column[
+
+```perl
+my $fred, $barney; # WRONG! Fails to declare $barney
+my($fred, $barney); # declares both
+```
+]
+
+---
+
+### * The use strict Pragma
+
+Perl tends to be a pretty permissive language.* But maybe you want Perl to impose a
+little discipline; that can be arranged with the <code>use strict</code> pragma.
+
+A pragma is a hint to a compiler, telling it something about the code. In this case, 
+the <code>use strict</code> pragma tells Perl’s internal compiler that 
+it should enforce some good programming rules for the rest of this block or source file.
+
+Most people recommend that programs that are longer than a screenful of text generally
+need <code>use strict</code>. 
+
+### * The return Operator
+
+The <code>return</code> operator immediately returns a value from a subroutine
+
+---
+
+### * Persistent, Private Variables
+
+Declaring our variable with state tells Perl to retain the variable’s value between calls
+to the subroutine and to make the variable private to the subroutine
+
+```perl
+use 5.010;
+sub marine {
+  state $n = 0; # private, persistent variable $n
+  $n += 1;
+  print "Hello, sailor number $n!\n";
+}
+```
+---
+
+### Subroutines example
+
+A Better &max Routine
+
+```perl
+$maximum = &max(3, 5, 10, 4, 6);
+sub max {
+  my($max_so_far) = shift @_;
+  foreach (@_) {
+    if ($_ > $max_so_far) {
+      $max_so_far = $_;
+    }
+  }
+  $max_so_far;
+}
+```
 
 ---
 
