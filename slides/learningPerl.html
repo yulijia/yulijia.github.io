@@ -859,19 +859,67 @@ $hash{'orange'}{'red'} = 'red orange';
 $hash{'orange'}{'green'} = 'green orange';
 $hash{'apple'}{'red'} = 'red apple';
 $hash{'apple'}{'green'} = 'green apple';
-$kkk=\%hash;
+# $kkk=\%hash; 
 foreach $fruit (keys %hash)
 {
     foreach $color (keys %{$hash{$fruit}})
     {
         print $hash{$fruit}{$color},"\n";
-        print $kkk->{$fruit}->{$color} , "\n";
+        # print $kkk->{$fruit}->{$color} , "\n";
     }
 }
 ```
 
 ---
 
+template: inverse
+
+# In the World of Regular Expressions
+
+(Larning Perl: Chapter 7)
+
+---
+
+### * What Are Regular Expressions?
+
+A regular expression, often called a **pattern** in Perl, is a template that either matches or
+doesn’t match a given string.
+
+- Don’t confuse regular expressions with shell filename-matching patterns, called
+globs. A typical glob is what you use when you type *.pm to the Unix shell to match all
+filenames that end in .pm. The previous example uses a glob of chapter*.txt. (You may
+have noticed that you had to quote the pattern to prevent the shell from treating it like
+a glob.) 
+
+---
+
+### * Using Simple Patterns
+
+To match a pattern (regular expression) against the contents of <code>$_</code>, simply put the pat-
+tern between a pair of forward slashes (**/**), like we do here:
+
+```perl
+$_ = "yabba dabba doo";
+  if (/abba/) {
+  print "It matched!\n";
+}
+```
+
+The expression /abba/ looks for that four-letter string in $_; if it finds it, it returns a
+true value. 
+
+Because the pattern match is generally being used to return a true or false value, it is
+almost always found in the conditional expression of **if** or **while**.
+
+All of the usual backslash escapes that you can put into double-quoted strings are
+available in patterns, so you could use the pattern /coke\tsprite/ to match the 11
+characters of coke, a tab, and sprite.
+
+---
+
+### * About Metacharacters
+
+---
 name: last-page
 template: inverse
 
