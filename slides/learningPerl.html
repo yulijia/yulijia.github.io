@@ -196,10 +196,156 @@ template: inverse
 (Larning Perl: Chapter 2)
 ---
 
+### * Numbers
+
+- Floating-Point Literals
+```perl
+1.25
+255.00
+7.25e45 # 7.25 times 10 to the 45th power (a big number)
+-12.E-23 # another way to say that - the E may be uppercase
+```
+- Integer Literals
+```perl
+0
+-40
+3249089384 # also can write as 3_249_089_384  
+```
+- Nondecimal Integer Literals
+```perl
+0377 # 377 octal, same as 255 decimal
+0xff # FF hex, also 255 decimal
+0b11111111 # also 255 decimal 
+```
+- Numeric Operators
+```perl
+# + plus, - minus, * times, / divided
+10.2 / 0.3 # 10.2 divided by 0.3, or 34
+10 / 3 # always floating-point divide, so 3.3333333...
+```
+---
+
+### * Strings
+
+- Single-Quoted String Literals
+```perl
+'fred' # those four characters: f, r, e, and d
+'' # the null string (no characters)
+'hello\n' # hello followed by backslash followed by n
+```
+.red[Note that the \n within a single-quoted string is not interpreted as a newline, but as the
+two characters backslash and n. ]
+
+- Double-Quoted String Literals
+```perl
+"hello world\n" # hello world, and a newline
+"coke\tsprite" # cook, a tab, and sprite
+```
+
+---
+
+- String Operators 
+
+String values can be concatenated with the . operator. (Yes, that’s a single period.)
+
+```perl
+"hello" . "world" # same as "helloworld"
+"hellow" . '' . "world" # same as 'hello world'
+'hello world' . "\n" # same as "hello world\n"
+```
+A special string operator is the string repetition operator, consisting of the single
+lowercase letter x. This operator takes its left operand (a string) and makes as many
+concatenated copies of that string as indicated by its right operand (a number).
+
+```perl
+fred" x 3        # is "fredfredfred"
+"barney" x (4+1) # is "barney" × 5, or "barneybarneybarneybarneybarney"
+5 × 4            # is really "5" × 4, which is "5555"
+```
+---
+
+### * Perl’s Built-in Warnings
+
+Perl can be told to warn you when it sees something suspicious going on in your pro-
+gram. To run your program with warnings turned on, use the -w option on the com-
+mand line:
+
+<code>$ perl -w my_program</code>
+
+Or, if you always want warnings, you may request them on the #! line:
+
+<code>#!/usr/bin/perl -w</code>
+
+---
+
+### * Scalar Variables
+
+A *variable* is a name for a container that holds one or more values. 
+A scalar variable holds a single scalar value.
+
+Scalar variable names begin with a dollar sign followed by what we’ll call a Perl identifier: 
+a letter or underscore, and then possibly more letters, or digits, or underscores. 
+Another way to think of it is that it’s made up of alphanumerics and underscores, 
+but can’t start with a digit. Upper- and lowercase letters are distinct: 
+the variable <code>$Fred</code> is a different variable from <code>$fred</code>.
+
+---
+
+- Scalar Assignment
+
+```perl
+$fred = 17; # give $fred the value of 17
+$barney = 'hello'; # give $barney the five-character string 'hello'
+$barney = $fred + 3; # give $barney the current value of $fred plus 3 (20)
+$barney = $barney * 2; # $barney is now $varney multiplied by 2 (40)
+```
+- Binary Assignment Operators
+
+Expressions like $fred = $fred + 5 (where the same variable appears on both sides of
+an assignment) occur frequently enough that Perl (like C and Java) has a shorthand for
+the operation of altering a variable—the **binary assignment operator**. 
+
+```perl
+$fred = $fred + 5; # without the binary assignment operator
+$fred += 5; # with the binary assignment operator
+```
+- Output with print
+
+The <code>print</code> operator takes a scalar argument and puts it out without any embellishment onto standard
+output.
+
+```perl
+print "hello world\n"; # say hello world, followed by a newline
+```
+
+---
+
+- Interpolation of Scalar Variables into Strings
+
+This means that any scalar variable† name in the
+string is replaced with its current value.
+```perl
+$meal = "brontosaurus steak";
+$barney = "fred ate a $meal"; # $barney is now "fred ate a brontosaurus steak"
+$barney = 'fred ate a ' . $meal; # another way to write that
+```
+
+---
+
 # Introduction
 $$e^{i\pi} + 1 = 0$$
 
 Test $$\LaTeX$$
+
+---
+
+template: inverse
+
+# Lists and Arrays
+
+(Larning Perl: Chapter 3)
+
+---
 
 ---
 
