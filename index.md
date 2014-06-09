@@ -20,6 +20,8 @@ become the master.
     盛年不重来，一日难再晨。
     及时当勉励，岁月不待人。
 
+**I am looking at the future with concern, but with good hope.**
+
 **Wishlist:** Star Trek
 
 
