@@ -3,7 +3,7 @@ layout: homepage
 avatar: yes
 ---
 
-**Welcome** to the website of Lijia Yu. I majored in Computational Mathematics when I was a undergraduate student at [BUCT](http://www.buct.edu.cn) and now I'm a master's candidate majoring in Bioinformatics at [BIG](http://www.big.ac.cn). This site is mainly about biology, mathematics, data analysis, daily life, etc. By the way, You may find many grammar mistakes/Chinglish in this site, please contact me.
+**Welcome** to the website of Lijia Yu. I majored in Computational Mathematics when I was a undergraduate student at [BUCT](http://www.buct.edu.cn) and in July 2014 I'm will got my master degree in Bioinformatics at [BIG](http://www.big.ac.cn). This site is mainly about biology, mathematics, data analysis, daily life, etc. By the way, You may find many grammar mistakes/Chinglish in this site, please contact me.
 
 **A poem, I think the way I want to go:**
 
