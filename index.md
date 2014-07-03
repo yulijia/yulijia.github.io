@@ -24,6 +24,5 @@ become the master.
 
 **Wishlist:** Star Trek
 
-
 **Contact Me:** yu AT lijiayu DOT net
 
