@@ -4,7 +4,7 @@ avatar: yes
 ---
 
 
-## Perl:      
+## Perl Lecture:      
 - [Learning Perl](http://yulijia.net/slides/learningPerl.html "Learning Perl") 
 
 ## UCAS course presentation slides:
