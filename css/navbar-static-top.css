@@ -1,0 +1,50 @@
+.navbar-static-top {
+  margin-bottom: 19px;
+  background:transparent;
+
+}
+
+body {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+/* Main marketing message and sign up button */
+.jumbotron {
+  margin-bottom: 0px;
+  border-bottom: 1px solid #F2F2F2;
+  padding-top: 0px;
+  background-image:url('');
+  background-color:#FAFAFA;
+  background-repeat:no-repeat;
+  /*background-position:center;*/
+}
+.footer {
+  color: #777;
+  /*border-top: 1px solid #e5e5e5;*/
+}
+
+.navbar-default .navbar-nav > li > a:hover, 
+.navbar-default .navbar-nav > li > a:focus {
+  background-color: #F2F2F2;
+  color: #000;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Lato', sans-serif;
+}
+p, div {
+    font-family: 'Lato Light 300', sans-serif;
+}
+
+.jumbotron p{
+ font-size:1em;
+}
+
+.jumbotron h1{
+ text-decoration:underline;
+}
+
+
+
