@@ -45,6 +45,7 @@ p, div {
 .jumbotron h1{
  text-decoration:underline;
 }
-
-
+.navbar-nav {
+text-align:center;
+} 
 
