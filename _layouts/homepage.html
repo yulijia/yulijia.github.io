@@ -1,29 +1,83 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="Description" content="A website of Lijia Yu, including Chinese and English blogs." />
-	<meta name="Keywords" content="genomics, bioinformatics, mathematics, statistics, perl, R language, data visualization, data analysis, LaTeX, Lijia Yu" />
-	<title>Lijia Yu's Website</title> 
-	<link rel="stylesheet" href="/css/homepage.css" type="text/css" />
-	<link rel="shortcut icon" href=" /images/favicon.ico" /> 
-</head>
-<body>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A website of Lijia Yu, including Chinese and English blogs.">
+    <meta name="author" content="Lijia Yu">
+    <meta name="Keywords" content="genomics, bioinformatics, mathematics, statistics, perl, R language, data visualization, data analysis, LaTeX, Lijia Yu" />
+    <link rel="icon" href="/images/favicon.ico">
 
-<h1 id="logo"><a href="http://lijiayu.net/">Lijia Yu's Website</a></h1>
+    <title>Lijia Yu's Website</title>
 
-<ul class="nav pills">
-  <li><a href="/" title="Homepage">Home</a></li>
-  <li><a href="/cn/" title="My Chinese blog">Chinese</a></li>
-  <li><a href="/en/" title="My English blog">English</a></li>
-  <li><a href="/lab/" title="Some of my work">Lab</a></li>
-  <li><a href="/slides/" title="Presentation slides">Slides</a></li>
-  <li><a href="/design/" title="Digital design">Design</a></li>
-  <li><a href="/ePad/" title="Editor pad online">ePad</a></li>
-</ul>
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
 
-{{ content }}
+    <!-- Custom styles for this template -->
+    <link href="/css/navbar-static-top.css" rel="stylesheet">
+    
 
-<p align="center"><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> on GitHub | Copyright 2011 - {{site.time | date:"%Y"}} by <a href="http://yulijia.net" title="yulijia.net">yulijia.net</a> &amp; <a href="http://lijiayu.net" title="lijiayu.net">lijiayu.net</a> |Updated @{{site.time | date:"%Y-%m-%d %H:%M:%S"}}</small></p>
-</body>
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+
+    <div class="container">
+
+      <!-- Main component for a primary marketing message or call to action -->
+      <div class="jumbotron">
+      
+        <!-- Static navbar -->
+        <div class="navbar navbar-default navbar-static-top" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+            </div>
+            <div class="navbar-collapse collapse">
+              <ul class="nav navbar-nav">
+                <li class="active"><a href="/" title="Homepage">Home</a></li>
+                <li><a href="/about/" title="About Me">About</a></li>
+                <li><a href="/lab/" title="Some of my reserch and works">Lab</a></li>
+                <li><a href="/about/resume.pdf" title="Resume">Resume</a></li>
+                <li><a href="/cn/" title="My Chinese blog">Chinese blog</a></li>
+                <li><a href="/en/" title="My English blog">English blog</a></li>
+                <li><a href="/slides/" title="Presentation slides">Slides</a></li>
+              </ul>
+            </div><!--/.nav-collapse -->
+          </div>
+           
+        </div>
+     {{ content }}
+    </div>
+    <div class="footer">
+      <p align="center"><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> on GitHub | Copyright 2011 - {{site.time | date:"%Y"}} by <a href="http://yulijia.net" title="yulijia.net">yulijia.net</a> &amp; <a href="http://lijiayu.net" title="lijiayu.net">lijiayu.net</a> | Updated @{{site.time | date:"%Y-%m-%d %H:%M:%S"}}</small>
+      </p>
+    </div>
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+  </body>
 </html>
