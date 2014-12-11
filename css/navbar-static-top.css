@@ -34,20 +34,20 @@ body {
 
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Lato', sans-serif;
+  font-family: 'Lato', sans-serif;
 }
 p, div {
-    font-family: 'Lato Light 300', sans-serif;
+  font-family: 'Lato Light 300', sans-serif;
 }
 
 .jumbotron p{
- font-size:1em;
+  font-size:1em;
 }
 
 .jumbotron h1{
- text-decoration:underline;
+  text-decoration:underline;
 }
 .navbar-nav {
-text-align:center;
+  text-align:center;
 } 
 
