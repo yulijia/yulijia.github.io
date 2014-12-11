@@ -10,7 +10,7 @@ body {
 
 /* Main marketing message and sign up button */
 .jumbotron {
-  width:70%;
+  width: 100%;
   margin: 0px auto;
   border-bottom: 1px solid #F2F2F2;
   padding-top: 0px;
@@ -21,7 +21,7 @@ body {
 }
 .footer {
   margin: 0px auto;
-  width:70%;
+  width: 100%;
   color: #777;
   /*border-top: 1px solid #e5e5e5;*/
 }
