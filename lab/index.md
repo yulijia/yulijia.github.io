@@ -3,7 +3,7 @@ layout: homepage
 avatar: yes
 ---
 
-#Coming Soon...
+# To be continued...
 
 
 ### Toys:
