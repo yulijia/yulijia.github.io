@@ -7,9 +7,7 @@ avatar: yes
 # Lijia Yu
 
 
-> #### I am looking at the future with concern, but with good hope.
->
-> #### 我忧心忡忡地看待未来,但仍满怀美好的希望。  
+> #### Seize the day and make my life extraordinary.
 
 > #### 陶渊明《杂诗》  
 >
