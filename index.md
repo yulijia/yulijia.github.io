@@ -7,7 +7,7 @@ avatar: yes
 # Lijia Yu
 
 
-> #### Seize the day and make my life extraordinary.
+> #### Seize the day and make our lives extraordinary.
 
 > #### 陶渊明《杂诗》  
 >
