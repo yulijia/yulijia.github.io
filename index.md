@@ -7,7 +7,7 @@ avatar: yes
 # Lijia Yu
 
 
-> #### Seize the day and make our lives extraordinary.
+> #### Seize the day and make your lives extraordinary.
 
 > #### Do have faith in what you are doing.
 
