@@ -14,4 +14,4 @@ avatar: yes
 ### Translations:
 
 - jstatsoft: [jstatsoft](https://github.com/yulijia/jstatsoft)
-- JuliaByExample: [JuliaByExample:](https://github.com/yulijia/JuliaByExample)
+- JuliaByExample: [JuliaByExample](https://github.com/yulijia/JuliaByExample)
