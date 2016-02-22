@@ -15,4 +15,6 @@ avatar: yes
 
 > #### 人生苦短 life is too short
 
+> #### Don't you want to take a leap of faith? Or become an old man, filled with regret, waiting to die alone.
+
 **Contact Me:** yu AT lijiayu DOT net
