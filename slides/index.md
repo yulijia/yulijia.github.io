@@ -5,11 +5,11 @@ avatar: yes
 
 
 ## Perl Lecture:      
-- [Learning Perl](http://yulijia.net/slides/learningPerl.html "Learning Perl") 
+- [Learning Perl](./learningPerl.html "Learning Perl") 
 
-## UCAS course presentation slides:
-- What's the biggest cell in the world
-- What is bioinformatics
-- Statistical graph and data visualization
-- META analysis
+## UCAS course presentation slides (in Chinese):
+- [What's the biggest cell in the world](./BigCell.pdf "What's the biggest cell in the world")
+- [What is bioinformatics](./WhatisBioinformatics.pdf "What is bioinformatics")
+- [Statistical graph and data visualization](./StatisticalGraphandDataVsualization.pdf "Statistical graph and data visualization") (it contained some broken images)
+- [Virus](./virus.pdf "Virus")
 
