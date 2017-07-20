@@ -17,4 +17,7 @@ avatar: yes
 
 > #### Don't you want to take a leap of faith? Or become an old man, filled with regret, waiting to die alone.
 
+> #### 人生天地之间，若白驹之过隙，忽然而已。——《庄子·知北游》
+
+
 **Contact Me:** yu AT lijiayu DOT net
