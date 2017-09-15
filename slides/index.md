@@ -12,4 +12,6 @@ avatar: yes
 - [What is bioinformatics](./WhatisBioinformatics.pdf "What is bioinformatics")
 - [Statistical graph and data visualization](./StatisticalGraphandDataVsualization.pdf "Statistical graph and data visualization") (it contained some broken images)
 - [Virus](./virus.pdf "Virus")
+- [Meta analysis history](./meta_class_presentation.pdf "Meta analysis history")
+- [Low carbon in China](./low_carbon_presentation.pdf "Low carbon in China")
 
