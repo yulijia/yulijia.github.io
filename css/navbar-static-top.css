@@ -1,3 +1,5 @@
+@import url(http://fonts.googleapis.com/css?family=Lato);
+
 .navbar-static-top {
   margin-bottom: 19px;
   background:transparent;
@@ -7,7 +9,7 @@ body {
   padding-top: 20px;
   padding-bottom: 20px;
   background-color: #ebebeb;
-  font-family:sans-serif,Helvetica,Arial;
+  font-family: 'Lato', sans-serif, Helvetica, Arial;
 }
 
 /* Main marketing message and sign up button */
@@ -38,10 +40,10 @@ body {
 
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Lato', sans-serif;
+  font-family: 'Lato';
 }
 p, div {
-  font-family: 'Lato Light 300', sans-serif;
+  font-family: 'Lato'; 
 }
 
 .jumbotron p{
