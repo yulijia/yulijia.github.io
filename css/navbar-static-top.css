@@ -6,7 +6,7 @@
 body {
   padding-top: 20px;
   padding-bottom: 20px;
-  background-color:#f9f9f9;
+  background-color: #ebebeb;
   font-family:sans-serif,Helvetica,Arial;
 }
 
@@ -14,11 +14,13 @@ body {
 .jumbotron {
   width: 100%;
   margin: 0px auto;
-  border: 1px solid #ECECEC;//#F2F2F2;
+  border: 1px solid #ECECEC; 
+  border-top: 3px solid #c72323;
   padding-top: 0px;
   background-image:url('');
-  background-color:#fff;
+  background-color:#fafafa;
   background-repeat:no-repeat;
+  box-shadow: 0 0 5px 5px rgba(160,160,160,0.05);
   /*background-position:center;*/
 }
 .footer {
@@ -49,4 +51,5 @@ p, div {
 .navbar-nav {
   text-align:center;
 } 
+
 
