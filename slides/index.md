@@ -4,6 +4,12 @@ avatar: yes
 ---
 
 
+## Bioinformatcis for medical students
+
+- [Introduction to Bioinformatics without algorithms](./bioinfomatcis_for_medical_students/2019-05-15-Introduction_to_Bioinformatics.html "Introduction to Bioinformatics without algorithms")
+
+
+
 ## Perl Lecture:      
 - [Learning Perl](./learningPerl.html "Learning Perl") 
 
