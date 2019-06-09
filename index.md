@@ -4,7 +4,7 @@ avatar: yes
 ---
 
 
-### Lijia Yu (俞丽佳)
+### Lijia Yu
 
 
 
