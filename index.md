@@ -4,7 +4,7 @@ avatar: yes
 ---
 
 
-## Lijia Yu
+### Lijia Yu (俞丽佳)
 
 
 
@@ -15,5 +15,7 @@ avatar: yes
 > #### 人生天地之间，若白驹之过隙，忽然而已。
 
 > #### As you think, so shall you become.
+
+> #### 独立之精神，自由之思想
 
 **Contact Me:** yu AT lijiayu DOT net
