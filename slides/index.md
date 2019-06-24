@@ -6,7 +6,7 @@ avatar: yes
 
 ## Bioinformatcis for medical students
 
-- [Introduction to Bioinformatics without algorithms](./bioinfomatcis_for_medical_students/2019-05-15-Introduction_to_Bioinformatics.html "Introduction to Bioinformatics without algorithms")
+- [Introduction to Bioinformatics (without algorithms)](./bioinfomatcis_for_medical_students/2019-05-15-Introduction_to_Bioinformatics.html "Introduction to Bioinformatics without algorithms")
 - [Introduction to Linux for Bioinformatics (Talk is cheap. Show me the code.)](./bioinfomatcis_for_medical_students/2019-06-17-Introduction_to_Linux_for_Bioinformatics.html "Introduction to Linux for Bioinformatics")
 
 
