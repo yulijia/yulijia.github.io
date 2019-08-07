@@ -9,6 +9,7 @@ avatar: yes
 - [Introduction to Bioinformatics (without algorithms)](./bioinfomatcis_for_medical_students/2019-05-15-Introduction_to_Bioinformatics.html "Introduction to Bioinformatics without algorithms")
 - [Introduction to Linux for Bioinformatics (Talk is cheap. Show me the code.)](./bioinfomatcis_for_medical_students/2019-06-17-Introduction_to_Linux_for_Bioinformatics.html "Introduction to Linux for Bioinformatics")
 - [A beginners guide to Call SNPs and indels (Part I)](./bioinfomatcis_for_medical_students/2019-06-28-A_beginners_guide_to_Call_SNPs_and_indels_Part_I.html "A beginners guide to Call SNPs and indels (Part I)")
+- [A beginners guide to Call SNPs and indels (Part II)](./bioinfomatcis_for_medical_students/2019-06-28-A_beginners_guide_to_Call_SNPs_and_indels_Part_II.html "Mark Duplicates and Base (Quality Score) Recalibration (Part II)")
 
 
 ## Perl Lecture:      
