@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>A beginners guide to Call SNPs and Indels: Part III</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Lijia Yu" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <script src="libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+    <script src="libs/viz-0.3/viz.js"></script>
+    <link href="libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
+    <script src="libs/grViz-binding-1.0.1/grViz.js"></script>
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# A beginners guide to Call SNPs and Indels: Part III
+## <em>Call SNPs and Indel</em>
+### Lijia Yu @ NCCL in China
+### 2019/08/16<br/>(updated: 2019-08-18)
+
+---
+
+
+
+# Outline
+
+1. Review
+2. SNP calling: Mutect2
+3. VCF format
+4. Annotation: Annovar
+
+---
+
+
+### Q1: Target Region BED file
+
+
+![](./2019-08-16-A_beginners_guide_to_Call_SNPs_and_indels_Part_III_files/figure/BEDformat.png)
+
+- `chrom`: The name of the chromosome (e.g. chr3, chrY, chr2_random) or scaffold (e.g. scaffold10671).
+- `chromStart`: The starting position of the feature in the chromosome or scaffold. **The first base in a chromosome is numbered 0.**
+- `chromEnd`: The ending position of the feature in the chromosome or scaffold. The chromEnd base is not included in the display of the feature. For example, the first 100 bases of a chromosome are defined as chromStart=0, chromEnd=100, and span the bases numbered 0-99.
+
+
+.footnote[
+[1][BED format](https://genome.ucsc.edu/FAQ/FAQformat.html#format1)
+]
+
+
+---
+
+# Pipeline 
+
+<div id="htmlwidget-31cd15f1117d25089b75" style="width:504px;height:504px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-31cd15f1117d25089b75">{"x":{"diagram":"digraph flowchart {\n      # node definitions with substituted label text\n      node [fontname = Helvetica, shape = rectangle]        \n      tab1 [label = \"Quality Control: fastQC\"]\n      tab2 [label = \"Phred 64 to 33: Trimmomatic\"]\n      tab3 [label = \"Map to Reference: Burrows-Wheeler Aligner\"]\n      tab4 [label = \"Sort BAM file\"]\n      tab5 [label = \"Add BAM header\"]\n      tab6 [label = \"Mark Duplicates: MarkDuplicatesSpark\"]\n      tab7 [label = \"Base Recalibration: BaseRecalibrator, ApplyBQSR\"]\n      tab8 [label = \"Make a BAM index\"]\n      tab9 [label = \"SNV and Indel Calling\"]\n\n      # edge definitions with the node IDs\n      tab1 -> tab3 -> tab5 -> tab6 -> tab7 -> tab8 -> tab9;\n      tab4 -> tab6;\n      tab2 -> tab3;\n      }","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+
+---
+
+# Workflow
+
+![](./2019-08-16-A_beginners_guide_to_Call_SNPs_and_indels_Part_III_files/figure/Workflow.png)
+
+.footnote[
+[1][Hands-on Tutorial on SNP Calling](http://www.transplantdb.eu/sites/transplantdb.eu/files/SNPcallingTutorial-Haberer_010715.pdf)
+]
+
+---
+
+# Somatic mutation
+
+
+.center[
+&lt;img src="https://ib.bioninja.com.au/_Media/somatic-vs-germline_med.jpeg" width="500"&gt;
+]
+
+An alteration in DNA that occurs after conception.
+
+.footnote[
+[1] [Somatic vs Germline Mutations](https://ib.bioninja.com.au/standard-level/topic-3-genetics/33-meiosis/somatic-vs-germline-mutatio.html)
+]
+
+---
+
+# Call SNPs and Indels (in our class)
+
+- Somatic SNV and Indels in Solid tumor (not include leukemia)
+
+--
+
+- Somatic mutation = mutation in tumor tissue but not in normal tissue or blood 
+
+--
+
+- SNP (single nucleotide polymorphism)
+
+--
+
+- SNV (single nucleotide variant)
+
+--
+
+- SNA (single-nucleotide alteration)
+
+
+---
+
+# Make a BAM index file
+
+```bash
+samtools index [-bc] [-m INT] aln.bam|aln.cram [out.index]
+```
+
+Index a coordinate-sorted BAM or CRAM file for fast random access. (Note that this does not work with SAM files even if they are bgzip compressed — to index such files, use tabix(1) instead.)
+
+This index is needed when region arguments are used to limit samtools view and similar commands to particular regions of interest.
+
+If an output filename is given, the index file will be written to out.index. Otherwise, for a CRAM file aln.cram, index file aln.cram.crai will be created; &lt;u&gt;for a BAM file aln.bam, either aln.bam.bai or aln.bam.csi will be created&lt;/u&gt;, depending on the index format selected.
+
+[1][Samtools](http://www.htslib.org/doc/samtools.html)
+
+---
+
+# Mutect2
+
+```bash
+gatk --java-options "-Xmx8G" Mutect2 \
+-R /home/admin/database/reference/hg19/ucsc.hg19.fasta \
+-I ../out/normal_recal.bam \
+-I ../out/cancer_recal.bam \
+-tumor cancer \
+-normal normal \
+--germline-resource af-only-gnomad.raw.sites.hg19.vcf.gz \
+-L ../in/Illumina.bed \
+-O ../out/somatic.vcf
+```
+
+---
+
+# FilterMutectCalls
+
+```bash
+gatk --java-options "-Xmx8G" FilterMutectCalls \
+-V ../out/somatic.vcf \
+-O ../out/somatic_filtered.vcf.gz
+```
+
+![](./2019-08-16-A_beginners_guide_to_Call_SNPs_and_indels_Part_III_files/figure/filter.png)
+
+.footnote[
+[1] [Filter somatic SNVs and indels called by Mutect2](https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.6.0/org_broadinstitute_hellbender_tools_walkers_mutect_FilterMutectCalls.php)
+]
+
+---
+
+# VCF format: Meta-information lines
+ 
+```
+##fileformat=VCFv4.0
+##fileDate=20090805
+##source=myImputationProgramV3.1
+##reference=1000GenomesPilot-NCBI36
+##phasing=partial
+```
+
+File meta-information is included after the ## string, often as key=value pairs.
+
+.footnote[
+[1] [VCF (Variant Call Format) version 4.0](https://www.internationalgenome.org/wiki/Analysis/vcf4.0/)
+]
+---
+
+# VCF format: Meta-information lines
+
+```
+##INFO=&lt;ID=NS,Number=1,Type=Integer,Description="NumberOfSamplesWithData"&gt;
+##INFO=&lt;ID=DP,Number=1,Type=Integer,Description="Total Depth"&gt;
+##INFO=&lt;ID=AF,Number=.,Type=Float,Description="Allele Frequency"&gt;
+##INFO=&lt;ID=AA,Number=1,Type=String,Description="Ancestral Allele"&gt;
+##INFO=&lt;ID=DB,Number=0,Type=Flag,Description="dbSNP membership, build 129"&gt;
+##INFO=&lt;ID=H2,Number=0,Type=Flag,Description="HapMap2 membership"&gt;
+```
+
+INFO fields should be described as follows (all keys are required):
+
+```
+##INFO=&lt;ID=ID,Number=number,Type=type,Description=”description”&gt;
+```
+
+Possible Types for INFO fields are: Integer, Float, Flag, Character, and String.
+
+
+.footnote[
+[1] [VCF (Variant Call Format) version 4.0](https://www.internationalgenome.org/wiki/Analysis/vcf4.0/)
+]
+---
+
+# VCF format: Meta-information lines
+
+```
+##FILTER=&lt;ID=q10,Description="Quality below 10"&gt;
+##FILTER=&lt;ID=s50,Description="Less than 50% of samples have data"&gt;
+##FORMAT=&lt;ID=GT,Number=1,Type=String,Description="Genotype"&gt;
+##FORMAT=&lt;ID=GQ,Number=1,Type=Integer,Description="Genotype Quality"&gt;
+##FORMAT=&lt;ID=DP,Number=1,Type=Integer,Description="Read Depth"&gt;
+##FORMAT=&lt;ID=HQ,Number=2,Type=Integer,Description="Haplotype Quality"&gt;
+```
+
+FILTERs that have been applied to the data should be described as follows:
+
+```
+##FILTER=&lt;ID=ID,Description=”description”&gt;
+```
+
+Likewise, Genotype fields specified in the FORMAT field should be described as follows:
+
+```
+##FORMAT=&lt;ID=ID,Number=number,Type=type,Description=”description”&gt;
+```
+
+Possible Types for FORMAT fields are: Integer, Float, Character, and String.
+
+.footnote[
+[1] [VCF (Variant Call Format) version 4.0](https://www.internationalgenome.org/wiki/Analysis/vcf4.0/)
+]
+---
+
+# VCF format: The header line syntax
+
+
+```
+#CHROM POS ID REF ALT QUAL FILTER INFO FORMAT NA00001 NA00002 NA00003
+```
+
+The header line names the 8 fixed, mandatory columns. These columns are as follows:
+
+- CHROM
+- POS
+- ID
+- REF
+- ALT
+- QUAL
+- FILTER
+- INFO
+
+If genotype data is present in the file, these are followed by a FORMAT column header, then an arbitrary number of sample IDs. The header line is tab-delimited.
+
+
+.footnote[
+[1] [VCF (Variant Call Format) version 4.0](https://www.internationalgenome.org/wiki/Analysis/vcf4.0/)
+]
+---
+
+# VCF format: Data lines
+
+
+![](./2019-08-16-A_beginners_guide_to_Call_SNPs_and_indels_Part_III_files/figure/VCF.png)
+
+
+There are 8 fixed fields per record. All data lines are tab-delimited. In all cases, missing values are specified with a dot (”.”). Fixed fields are:
+
+1.CHROM chromosome: an identifier from the reference genome. All entries for a specific CHROM should form a contiguous block within the VCF file.(Alphanumeric String, Required)
+
+
+.footnote[
+[1] [VCF (Variant Call Format) version 4.0](https://www.internationalgenome.org/wiki/Analysis/vcf4.0/)
+]
+
+---
+
+# VCF format: Data lines
+
+
+![](./2019-08-16-A_beginners_guide_to_Call_SNPs_and_indels_Part_III_files/figure/VCF.png)
+
+
+2.POS position: The reference position, with the 1st base having position 1. Positions are sorted numerically, in increasing order, within each reference sequence CHROM. (Integer, Required)
+
+
+.footnote[
+[1] [VCF (Variant Call Format) version 4.0](https://www.internationalgenome.org/wiki/Analysis/vcf4.0/)
+]
+
+---
+
+# VCF format: Data lines
+
+
+![](./2019-08-16-A_beginners_guide_to_Call_SNPs_and_indels_Part_III_files/figure/VCF.png)
+
+
+3.ID semi-colon separated list of unique identifiers where available. If this is a dbSNP variant it is encouraged to use the rs number(s). No identifier should be present in more than one data record. If there is no identifier available, then the missing value should be used. (Alphanumeric String)
+
+.footnote[
+[1] [VCF (Variant Call Format) version 4.0](https://www.internationalgenome.org/wiki/Analysis/vcf4.0/)
+]
+
+---
+
+# VCF format: Data lines
+
+
+![](./2019-08-16-A_beginners_guide_to_Call_SNPs_and_indels_Part_III_files/figure/VCF.png)
+
+4.REF reference base(s): Each base must be one of A,C,G,T,N. Bases should be in uppercase. Multiple bases are permitted. The value in the POS field refers to the position of the first base in the String. For InDels, the reference String must include the base before the event (which must be reflected in the POS field). (String, Required).
+
+.footnote[
+[1] [VCF (Variant Call Format) version 4.0](https://www.internationalgenome.org/wiki/Analysis/vcf4.0/)
+]
+
+---
+
+
+# VCF format: Data lines
+
+
+![](./2019-08-16-A_beginners_guide_to_Call_SNPs_and_indels_Part_III_files/figure/VCF.png)
+
+
+5.ALT comma separated list of alternate non-reference alleles called on at least one of the samples. Options are base Strings made up of the bases A,C,G,T,N, or an angle-bracketed ID String (”&lt;ID&gt;“). If there are no alternative alleles, then the missing value should be used. Bases should be in uppercase. (Alphanumeric String; no whitespace, commas, or angle-brackets are permitted in the ID String itself)
+
+.footnote[
+[1] [VCF (Variant Call Format) version 4.0](https://www.internationalgenome.org/wiki/Analysis/vcf4.0/)
+]
+
+---
+
+
+# VCF format: Data lines
+
+
+![](./2019-08-16-A_beginners_guide_to_Call_SNPs_and_indels_Part_III_files/figure/VCF.png)
+
+
+5.QUAL phred-scaled quality score for the assertion made in ALT. i.e. give -10log_10 prob(call in ALT is wrong). If ALT is ”.” (no variant) then this is -10log_10 p(variant), and if ALT is not ”.” this is -10log_10 p(no variant). High QUAL scores indicate high confidence calls. Although traditionally people use integer phred scores, this field is permitted to be a floating point to enable higher resolution for low confidence calls if desired. (Numeric)
+
+.footnote[
+[1] [VCF (Variant Call Format) version 4.0](https://www.internationalgenome.org/wiki/Analysis/vcf4.0/)
+]
+
+---
+
+
+
+# VCF format: Data lines
+
+
+![](./2019-08-16-A_beginners_guide_to_Call_SNPs_and_indels_Part_III_files/figure/VCF.png)
+
+
+6.FILTER filter: PASS if this position has passed all filters, i.e. a call is made at this position. Otherwise, if the site has not passed all filters, a semicolon-separated list of codes for filters that fail. e.g. “q10;s50” might indicate that at this site the quality is below 10 and the number of samples with data is below 50% of the total number of samples. “0” is reserved and should not be used as a filter String. If filters have not been applied, then this field should be set to the missing value. (Alphanumeric String)
+
+.footnote[
+[1] [VCF (Variant Call Format) version 4.0](https://www.internationalgenome.org/wiki/Analysis/vcf4.0/)
+]
+
+---
+
+# VCF format: Data lines
+
+
+![](./2019-08-16-A_beginners_guide_to_Call_SNPs_and_indels_Part_III_files/figure/VCF.png)
+
+
+7.INFO additional information: (Alphanumeric String) INFO fields are encoded as a semicolon-separated series of short keys with optional values in the format: &lt;key&gt;=&lt;data&gt;[,data]. Arbitrary keys are permitted, although the following sub-fields are reserved (albeit optional):
+
+- AF allele frequency for each ALT allele in the same order as listed: use this when estimated from primary data, not called genotypes
+- DP combined depth across samples, e.g. DP=154
+
+.footnote[
+[1] [VCF (Variant Call Format) version 4.0](https://www.internationalgenome.org/wiki/Analysis/vcf4.0/)
+]
+
+---
+
+
+# VCF format: Data lines
+
+
+![](./2019-08-16-A_beginners_guide_to_Call_SNPs_and_indels_Part_III_files/figure/VCF.png)
+
+
+### FORMAT:
+
+- 1.GT: genotype. The allele values are 0 for the reference allele (what is in the reference sequence), 1 for the first allele listed in ALT, 2 for the second allele list in ALT and so on. 
+- 2.DP: read depth at this position for this sample (Integer)
+
+.footnote[
+[1] [VCF (Variant Call Format) version 4.0](https://www.internationalgenome.org/wiki/Analysis/vcf4.0/)
+]
+
+---
+
+
+# VCF format: Data lines
+
+
+![](./2019-08-16-A_beginners_guide_to_Call_SNPs_and_indels_Part_III_files/figure/filter.png)
+
+- 3.AD: Allelic depths for the ref and alt alleles in theorder listed
+
+- 4.AF: Allele fractions of alternate alleles in the tumor
+
+.footnote[
+[1] [VCF (Variant Call Format) version 4.0](https://www.internationalgenome.org/wiki/Analysis/vcf4.0/)
+]
+
+---
+
+# Annotation: Annovar
+
+```bash
+perl /home/admin/software/annovar/table_annovar.pl $INPUT \
+/home/admin/software/annovar/humandb -buildver hg19 \
+-out $OUT_DIR/$PREFIX.annovar -remove \
+-protocol refGene,clinvar_20170905 \
+-operation g,f \
+-nastring . \
+-vcfinput
+```
+```
+MTOR:NM_004958:exon40:c.C5665G:p.F1888L
+```
+
+- gene symbol
+- transcript id
+- exon number
+- cHGVS (info of the variant in coding level)
+- pHGVS (info of the variant in protein level) 
+
+---
+
+# Quitz
+
+1.Could you write the commands of call SNVs.Indel and annotation by yourself?
+
+Please write your codes in a script file (script.sh).
+
+2.Read the Sequence Variant Nomenclature by yourself.
+
+http://varnomen.hgvs.org/
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
