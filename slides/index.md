@@ -10,7 +10,7 @@ avatar: yes
 - [Introduction to Linux for Bioinformatics (Talk is cheap. Show me the code.)](./bioinfomatcis_for_medical_students/2019-06-17-Introduction_to_Linux_for_Bioinformatics.html "Introduction to Linux for Bioinformatics")
 - [A beginners guide to Call SNPs and indels (Part I)](./bioinfomatcis_for_medical_students/2019-06-28-A_beginners_guide_to_Call_SNPs_and_indels_Part_I.html "A beginners guide to Call SNPs and indels Part I")
 - [A beginners guide to Call SNPs and indels (Part II)](./bioinfomatcis_for_medical_students/2019-07-31-A_beginners_guide_to_Call_SNPs_and_indels_Part_II.html "Mark Duplicates and Base Recalibration")
-- [A beginners guide to Call SNPs and Indels: Part III](./bioinfomatcis_for_medical_students/2019-08-16-A_beginners_guide_to_Call_SNPs_and_indels_Part_III.html "Call SNPs and Indel")
+- [A beginners guide to Call SNPs and Indels (Part III)](./bioinfomatcis_for_medical_students/2019-08-16-A_beginners_guide_to_Call_SNPs_and_indels_Part_III.html "Call SNPs and Indel")
 
 ## Perl Lecture:      
 - [Learning Perl](./learningPerl.html "Learning Perl") 
