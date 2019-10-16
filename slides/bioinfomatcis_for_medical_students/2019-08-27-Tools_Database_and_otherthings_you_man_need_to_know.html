@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Tools, Database, and otherthings you may need to know</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="俞丽佳" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Tools, Database, and otherthings you may need to know
+## <em>however I don’t have enough time to tell you</em>
+### 俞丽佳
+### 2019/08/27<br/>(updated: 2019-09-09)
+
+---
+
+
+
+# Outline
+
+1. Review
+2. VarBen
+
+---
+
+
+### Q1: Write your bioinfomatics research report
+
+
+1. Executive Summary (\*)
+  - Introduction
+  - Data and Methods
+  - Results
+2. Data Mungling
+3. Analysis
+  - Step1
+  - Step 2
+4. Appendix (\*)
+  - Working dir
+  - Script descriptions
+  - List of Figures
+  - List of Tables
+
+---
+
+### Q2: Shell programming with BASH (Bourne Again SHell)
+
+```bash
+#!/bin/bash
+
+/home/admin/software/FastQC/fastqc -t 1 \
+-o /home/admin/project/out \
+--noextract \
+-d /home/admin/project/tmp \
+-f fastq \
+/home/admin/ILLUMINA_FASTQ/cancer_R1.fq.gz \
+/home/admin/ILLUMINA_FASTQ/cancer_R2.fq.gz
+
+```
+save in `.sh` format. (script.sh)
+
+```bash
+bash ./src/script.sh
+```
+
+.footnote[
+[1] [Shell programming with bash: by example, by counter-example](http://matt.might.net/articles/bash-by-example/)
+
+[2] **Bash**: &lt;https://en.wikipedia.org/wiki/Bash_(Unix_shell)&gt;
+]
+
+---
+
+### Q3: How to tells the Linux system not to stop run the code after I log out?
+
+
+```bash
+nohup bash ./src/script.sh &gt; mycommand.out 2&gt; mycommand.err &amp;
+```
+
+Alternatives
+
+- Screen
+
+- Tmux
+
+- Disown
+
+.footnote[
+[1][Unix Nohup: Run a Command or Shell-Script Even after You Logout](https://linux.101hacks.com/unix/nohup-command/)
+
+[2][Linux Nohup Command](https://linuxize.com/post/linux-nohup-command/)
+]
+
+---
+
+### Q4: How to connect to server or download data from server?
+
+
+- [PuTTY](https://putty.org/)
+- [xterm](https://invisible-island.net/xterm/)
+- [iterm2](https://iterm2.com): for macOS
+- [xshell](https://www.netsarang.com/en/xshell/)
+- [FileZilla](https://filezilla-project.org/): recommand
+- [WinSCP](https://winscp.net/eng/index.php)
+- [Rstudio](https://www.rstudio.com/products/rstudio/download/): recommand
+
+
+```bash
+ssh yulijia@192.168.0.105
+```
+- Host: 192.168.0.105
+- username: yulijia
+- password: password
+- port: 22
+
+![](./2019-08-27-Tools_Database_and_otherthings_you_man_need_to_know_files/figure/ssh.png)
+
+---
+
+### Q5: How to install software on Linux server?
+
+- C/C++: make &amp; make install
+- Python/Perl: usually you need to install dependencies and then run the code
+- Java: usually you just need to make sure you have installed correct JAVA program (version) and then run the downloaded `.jar` package
+
+```bash
+cd ./toolsA
+./configure --prefix=/home/yulijia
+make 
+make install
+```
+
+---
+
+### Q6: How to determine somatic mutation ? 
+
+- Germline VAF approximately 50% or 100%.
+
+- Somatic mutation related database.
+
+- Missense SNV, splicing site.
+
+- VAF dramatically difference between control and tumor sample.
+
+.footnote[
+[1] [standards and guidelines for the interpretation and reporting of sequence variants in cancer](https://www.ncbi.nlm.nih.gov/pubmed/27993330)
+]
+
+---
+
+### Q6: How to determine somatic mutation ? (Cont.)
+
+.center[
+![](./2019-08-27-Tools_Database_and_otherthings_you_man_need_to_know_files/figure/Damage.png)
+]
+
+.footnote[
+[1] [standards and guidelines for the interpretation and reporting of sequence variants in cancer](https://www.ncbi.nlm.nih.gov/pubmed/27993330)
+]
+
+---
+
+### Q7: The Integrative Genomics Viewer (IGV) 
+
+
+https://software.broadinstitute.org/software/igv/
+
+![](http://software.broadinstitute.org/software/igv/sites/cancerinformatics.org.igv/files/BermanNatGenet2011%202015-02-11%2014.31.21.png)
+
+---
+
+### Q8: Abbreviations (FASTA, FASTQ, SAM, BAM, VCF)
+
+#### FASTA is FAST-all (not abbreviation)
+#### FASTQ is FASTA + quality (not abbreviation)
+#### Sequence Alignment Map (SAM)
+#### Binary Alignment Map (BAM)
+#### Variant Call Format (VCF)
+#### Browser Extensible Data (BED)
+
+---
+
+### Q9: Mutation type
+
+![](./2019-08-27-Tools_Database_and_otherthings_you_man_need_to_know_files/figure/mutation_type.png)
+
+---
+
+# VarBen
+
+https://github.com/nccl-jmli/VarBen
+
+A tool for adding variant simulation to **.bam** files, including single-nucleotide variants, short insertions and deletions, and large structural variants.
+
+1. install dependencies 
+
+```bash
+python2 -m pip install pysam
+python2 -m pip install numpy
+
+git clone https://github.com/samtools/htslib.git
+make -C htslib
+git clone https://github.com/samtools/samtools.git
+make -C samtools
+cp samtools/samtools $HOME/bin
+git clone https://github.com/samtools/bcftools.git
+make -C bcftools
+cp bcftools/bcftools $HOME/bin
+git clone https://github.com/lh3/bwa.git
+make -C bwa
+cp bwa/bwa $HOME/bin
+```
+
+---
+
+# VarBen: edit SNV and Indel
+
+
+|chrom|start|end|allelefrequency|type|alternative|
+|:----:|:----:|:----:|:----:|:----:|:----:|
+|chr1|899778|899778|0.9|snv|T|
+|chr1|1158637|1158638|0.5|ins|TAG|
+|chr1|6533124|6533126|0.12|del|.|
+|chr7|55242467|55242481|0.3|Sub|TTC|
+
+- `Sub` is complex mutation, begin with capital letter 
+
+```bash
+#chrom  start end AF  type  alt
+chr1  899778  899778  0.9 snv T
+chr1  1158637 1158638 0.9 ins TAG
+chr1	6533124 6533126 0.9 del .
+#Complex indel format: EGFR, c.2237_2251&gt;TTC(p.E746_T751&gt;VP)
+chr7	55242467 55242481 0.3 Sub TTC	
+```
+
+---
+
+# VarBen: muteditor
+
+```bash
+python2 /opt/VarBen/bin/muteditor.py -m ./mutationFile.txt \
+-b ./Illumina_normal.bam \
+-r ./reference/hg19/ucsc.hg19.fasta \
+-p 4 \
+--aligner bwa \
+--alignerIndex ./reference/hg19/ucsc.hg19.fasta \
+--seqer illumina \
+--haplosize 10 \
+--mindepth 500 \
+--minmutreads 5 \
+--snpfrac 0.1 \
+-o ./Illumina_mut_out/
+```
+
+- `haplosize`: if the distance of two or more variants is less than 10bp, then the software will consider these variants are happenned on the sample haplotype.
+- `mindepth`: the minimum read depth on the editing site 
+- `minmutreads`: the minimum mutated read on the editing site
+- `snpfrac`: the SNP frequency on the editing site, if detecting a frequency large than the variable, then the software will skip the site.
+
+---
+
+# VarBen: edit SV
+
+- Deletion and Inversion
+
+|chrom|start|end|type|AF|
+|:----:|:----:|:----:|:----:|
+|chrX|12994966|12996009|del|0.4|
+|chrX|13703890|14134046|inv|0.8|
+
+- Duplication
+
+|chrom|start|end|type|AF|dup_num|
+|:----:|:----:|:----:|:----:|:----:|
+|chr1|15808448|15814030|dup|0.5|3|
+
+
+---
+
+# VarBen: sveditor
+
+
+```bash
+python2 /opt/VarBen/bin/sveditor.py -m ./svFile.txt \
+-b ./Illumina_normal.bam \
+-r ./reference/hg19/ucsc.hg19.fasta \
+--aligner bwa \
+--alignerIndex ./reference/hg19/ucsc.hg19.fasta \
+--seqer illumina \
+--mindepth 100 \
+--minmutreads 10 \
+-p 12 \
+-l 100 \
+-o ./sv_out/
+```
+
+- `l`: read length
+
+---
+
+# VarBen: edit result
+
+![](./2019-08-27-Tools_Database_and_otherthings_you_man_need_to_know_files/figure/varben_result.png)
+
+---
+background-image: url(https://bedtools.readthedocs.io/en/latest/_static/bedtools.swiss.png)
+background-size: 90px
+background-position: 90% 5%
+
+# Convert BAM to FASTQ
+
+- `bedtools` allows one to intersect, merge, count, complement, and shuffle genomic intervals from multiple files in widely-used genomic file formats such as BAM, BED, GFF/GTF, VCF.
+
+```bash
+bedtools bamtofastq -i edit.sorted.bam \
+-fq ./out/normal_R1.fq \
+-fq2 ./out/normal_R2.fq 
+```
+
+.footnote[
+[1] [bedtools: a powerful toolset for genome arithmetic](https://bedtools.readthedocs.io/en/latest/)
+]
+
+---
+
+# Test
+
+1. a piepline script to call SNV and Indel
+2. report (need to include IGV snapshot)
+
+deadline: 13th, Octorber, 2019
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
