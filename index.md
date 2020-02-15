@@ -16,6 +16,8 @@ avatar: yes
 
 > #### As you think, so shall you become.
 
-> #### 独立之精神，自由之思想
+> #### 独立之精神，自由之思想。
+
+> ### The truth was important, a healthy society should never have just one voice.
 
 **Contact Me:** yu AT lijiayu DOT net
