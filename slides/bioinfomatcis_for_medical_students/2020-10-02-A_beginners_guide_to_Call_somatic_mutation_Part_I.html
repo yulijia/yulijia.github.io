@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>A Beginners Guide to Call Somatic Mutation</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Lijia Yu @ NCCL in China" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# A Beginners Guide to Call Somatic Mutation
+## Part I
+### Lijia Yu @ NCCL in China
+### 2020/10/02<br/>(updated: 2020-10-03)
+
+---
+
+
+# Outline
+
+1. Introduction to linux for bioinformatics
+2. A brief Introduction of Cancer Genomics
+3. Quality Control
+
+---
+
+
+1. open broswer link: 192.168.0.105:8787
+
+
+![](./2019-06-17-Introduction_to_Linux_for_Bioinformatics_files/figure/RStudio.png)
+
+---
+
+# UNIX file system
+
+![](./2019-06-17-Introduction_to_Linux_for_Bioinformatics_files/figure/UnixFileSystem.png)
+
+
+
+---
+# UNIX file system
+
+## ls
+
+`ls` is a command to list computer files in Unix and Unix-like operating systems. 
+
+
+```bash
+ls /home/admin
+```
+
+
+![](./2019-06-17-Introduction_to_Linux_for_Bioinformatics_files/figure/ls.png)
+
+---
+
+# UNIX file system: files and extensions
+
+- For some operating systems, file extensions are important and define the file type. In e.g. Windows files have a three/four letter extension(e.g. .jpg, .exe, .docx, …)
+
+--
+
+- In UNIX file extensions are arbitrary (no particular sense), at least for the operating system. A file can have several extensions and will be recognized by the file permissions and content.
+
+--
+
+- Popular file extensions in bioinformatics:
+  - scripts
+     - .sh (shell/bash) 
+     - .pl (perl) 
+     - .py (python) 
+     - .r (R)
+  - data
+     - .txt (text)
+     - .csv/.tsv (tabular)
+     - .fasta/.fastq (sequence files)
+
+.footnote[
+[1] [Linux for bioinformatics
+](https://data.bits.vib.be/pub/trainingen/Linux/Linux_01_2018.pdf)
+]
+
+---
+
+
+# UNIX file system: users and access rights
+
+Every file and directory is protected. A set of permissions determines who can access a certain file and what kind of access is allowed.
+
+- User: the user who owns the file
+
+- Group: other users from the same group
+
+- Others: all others in the system
+
+- Read: display the file
+
+- Write: display and modify the content of the file
+
+- Execute: run a file ( only for scripts and compiled programs)
+
+.footnote[
+[1] [Linux for bioinformatics
+](https://data.bits.vib.be/pub/trainingen/Linux/Linux_01_2018.pdf)
+]
+
+
+---
+
+
+# UNIX file system: users and groups
+
+```bash
+ls -a
+```
+print a list of all files and directories (incl. hidden files). Hidden files can be recognized by
+‘.’ at the start of the name, ‘..’ is the parent directory
+
+
+```
+[root@nccl /home/lirui]$ ls -a
+.  ..  .bash_logout  .bash_profile  .bashrc
+```
+
+
+![](./2019-06-17-Introduction_to_Linux_for_Bioinformatics_files/figure/ls-a.png)
+
+
+    
+.footnote[
+[1] [Linux for bioinformatics
+](https://data.bits.vib.be/pub/trainingen/Linux/Linux_01_2018.pdf)
+]
+
+
+---
+
+
+# UNIX file system: users and groups
+
+```bash
+ls -l /usr/bin/gpg
+```
+
+```
+lrwxrwxrwx 1 root root 4 Feb 18 11:03 /usr/bin/gpg -&gt; gpg2
+```
+
+- file permissions,
+- number of hard links,
+- owner name,
+- owner group,
+- file size,
+- time of last modification, and file/directory name
+
+
+.footnote[
+[1] [What do the fields in ls -al output mean?
+](https://unix.stackexchange.com/questions/103114/what-do-the-fields-in-ls-al-output-mean)
+]
+
+
+---
+
+
+# UNIX file system: users and groups
+
+File permissions is displayed as following;
+
+![](./2019-06-17-Introduction_to_Linux_for_Bioinformatics_files/figure/access_right.png)
+
+- r = readable
+- w = writable
+- x = executable
+
+
+.footnote[
+[1] [What do the fields in ls -al output mean?
+](https://unix.stackexchange.com/questions/103114/what-do-the-fields-in-ls-al-output-mean)
+
+[2] [Linux for bioinformatics
+](https://data.bits.vib.be/pub/trainingen/Linux/Linux_01_2018.pdf)
+]
+
+
+---
+
+# UNIX file system: file permission
+
+An example &lt;font color="red"&gt;-&lt;/font&gt;&lt;font color="blue"&gt;rwx&lt;/font&gt;&lt;font color="green"&gt;rw-&lt;/font&gt;&lt;font color="orange"&gt;r--&lt;/font&gt;, this means the line displayed is:
+
+--
+
+- &lt;font color="red"&gt;a regular file (displayed as -)&lt;/font&gt;
+--
+
+- &lt;font color="blue"&gt;readable, writable and executable by owner (rwx)&lt;/font&gt;
+--
+
+- &lt;font color="green"&gt;readable, writable, but not executable by group (rw-)&lt;/font&gt;
+--
+
+- &lt;font color="orange"&gt;readable but not writable or executable by other (r--)&lt;/font&gt;
+
+
+.footnote[
+[1] [Linux for bioinformatics
+](https://data.bits.vib.be/pub/trainingen/Linux/Linux_01_2018.pdf)
+]
+
+---
+
+# UNIX file system
+
+When entering a command you can use a wildcard character, this is used a substitute for one or many other characters. They are often used with file and directory name and filesystem commands.
+
+- `*` Match any number of characters
+- `?` Match one character
+- `[]` specify a range of characters on that position
+- `{}` specify a list of terms - separated by commas
+- `!` Exclude this range of characters
+
+.footnote[
+[1] [Linux for bioinformatics
+](https://data.bits.vib.be/pub/trainingen/Linux/Linux_01_2018.pdf)
+]
+
+
+---
+
+# UNIX file system
+
+How many files will you find using the following command:
+
+- `ls -l *.c`
+- `ls -l bam*`
+- `ls -l samtools.?`
+- `ls -l *.*[!a]`
+- `ls -l {*.c,*.h}`
+- `ls -l version.[a-z]h`
+
+.footnote[
+[1] [Linux for bioinformatics
+](https://data.bits.vib.be/pub/trainingen/Linux/Linux_01_2018.pdf)
+]
+
+---
+
+# Cancer genomics
+
+- `Cancer genomics` is the study of the totality of DNA sequence and gene expression differences between tumour cells and normal host cells.
+
+- `Cancer` is a group of genetic diseases that result from changes in the genome of cells in the body, leading them to grow uncontrollably. 
+
+
+.center[&lt;img src="https://www.genome.gov/sites/default/files/inline-images/dd_03_full.jpg" height="200"&gt;]
+
+
+.footnote[
+[1] [Cancer Genomics](https://www.genome.gov/dna-day/15-ways/cancer-genomics)]
+
+---
+
+# Germline versus Somatic Mutations
+
+
+.center[&lt;img src="https://ib.bioninja.com.au/_Media/somatic-vs-germline_med.jpeg" height="400"&gt;]
+
+
+.footnote[
+[1] [Germline versus Somatic Mutations](https://ib.bioninja.com.au/standard-level/topic-3-genetics/33-meiosis/somatic-vs-germline-mutatio.html)]
+
+---
+
+# Tests to Detect Cancer
+
+- **biopsies** or **operations** where tiny parts of the cancer tissue are removed for study.
+- **Liquid biopsies**: detection of circulating tumor DNA (or ctDNA) in the **blood of patients** 
+
+
+# Sequencing platform
+
+- [Illumina](https://www.illumina.com/) (HiSeq/MiSeq/NextSeq/NovaSeq, etc.)
+- [Thermo Fisher](https://www.thermofisher.com/hk/en/home.html) (Ion Torrent)
+- [BGI](https://en.mgitech.cn/) (MGISEQ)
+- [PacBio](https://www.pacb.com/) (Sequel)
+
+---
+
+# Illumina sequencing
+
+.center[&lt;img src="https://hackteria.org/wiki/images/thumb/1/19/Chemistry.png/569px-Chemistry.png" height="400"&gt;]
+
+
+
+.footnote[
+[1] [HiSeq2000 - Next Level Hacking](https://hackteria.org/wiki/HiSeq2000_-_Next_Level_Hacking)]
+
+---
+
+# FASTA format
+
+In bioinformatics and biochemistry, the FASTA format is a text-based format for representing either nucleotide sequences or amino acid (protein) sequences, in which nucleotides or amino acids are represented using single-letter codes.
+
+```bash
+&gt;SEQUENCE_1
+MTEITAAMVKELRESTGAGMMDCKNALSETNGDFDKAVQLLREKGLGKAAKKADRLAAEG
+LVSVKVSDDFTIAAMRPSYLSYEDLDMTFVENEYKALVAELEKENEERRRLKDPNKPEHK
+IPQFASRKQLSDAILKEAEEKIKEELKAQGKPEKIWDNIIPGKMNSFIADNSQLDSKLTL
+&gt;P01013 GENE X PROTEIN (OVALBUMIN-RELATED-fakedata)
+QIKDLLVSSSTDLDTTLVLVNAIYFKGMWKTAFNAEDTREMPFHVTKQESKPVQMMCMNNSFNVATL
+KMKILELPFASGDLSMLVLLPDEVSDLERIEKTINFEKLTEWTNPNTMEKRRVKVYLPQMKIEEKYN
+VLMALGMTDLFIPSANLTGISSAESLKISQAVHGAFMELSEDGIEMAGSTGVIEDIKHSPESEQFRA
+FLFLIKHNPTNTIVYFGRYWSP
+&gt;DNA_SEQ1
+NNATTGCCGDTTGTACCtgcgtgtcagac
+```
+
+.footnote[
+[1] [FASTA format used in blast](https://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Web&amp;PAGE_TYPE=BlastDocs&amp;DOC_TYPE=BlastHelp)
+]
+
+---
+
+# Flowcell
+
+
+.center[&lt;img src="2020-10-02-A_beginners_guide_to_Call_somatics_mutation_Part_I_files/figure/Flowcell.png" height="400"&gt;]
+
+
+.footnote[
+[1] [Flowcell imaging](https://is.muni.cz/el/1431/podzim2018/Bi5444/um/Bi5444_Analysis_of_sequencing_data_lesson_03.pdf)]
+
+
+---
+
+# FASTQ format
+
+
+A FASTQ file normally uses four lines per sequence.
+
+- Line 1 begins with a '@' character and is followed by a sequence identifier and an optional description (like a FASTA title line).
+- Line 2 is the raw sequence letters. A,T,C,G,N.
+- Line 3 begins with a '+' character and is optionally followed by the same sequence identifier (and any description) again.
+- Line 4 encodes the quality values for the sequence in Line 2, and must contain the same number of symbols as letters in the sequence.
+
+A FASTQ file containing a single sequence might look like this:
+
+```bash
+@SEQ_ID
+GATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT
++
+!''*((((***+))%%%++)(%%%%).1***-+*''))**55CCF&gt;&gt;&gt;&gt;&gt;&gt;CCCCCCC65
+```
+
+
+---
+
+# FASTQ format
+
+## Illumina sequence identifiers
+
+
+**@HWUSI-EAS100R:6:73:941:1973#0/1**
+
+
+
+| Name | Meaning|
+|---------------|---------------------------------------------------------------------|
+| HWUSI-EAS100R | the unique instrument name                                          |
+| 6             | flowcell lane                                                       |
+| 73            | tile number within the flowcell lane                                |
+| 941           | 'x'-coordinate of the cluster within the tile                       |
+| 1973          | 'y'-coordinate of the cluster within the tile                       |
+| #0            | index number for a multiplexed sample (0 for no indexing)           |
+| /1            | the member of a pair, /1 or /2 (paired-end or mate-pair reads only) |
+
+
+---
+
+# Quality
+
+A quality value `Q` is an integer mapping of `P` (i.e., the probability that the corresponding base call is &lt;u&gt;incorrect&lt;/u&gt;). Two different equations have been in use. The first is the standard Sanger variant to assess reliability of a base call, otherwise known as Phred quality score:
+
+`$$Q_{sanger}=-10log_{10}P$$`
+
+
+
+`$$Q_{solexa}=-10log_{10}\frac{P}{1-P}$$`
+
+---
+
+# Phred Quality Score
+
+| Phred Quality Score | Probability of incorrect base call | Base call accuracy |
+|---------------------|------------------------------------|--------------------|
+| 10                  | 1 in 10                            | 90%                |
+| 20                  | 1 in 100                           | 99%                |
+| 30                  | 1 in 1000                          | 99.9%              |
+| 40                  | 1 in 10,000                        | 99.99%             |
+| 50                  | 1 in 100,000                       | 99.999%            |
+| 60                  | 1 in 1,000,000                     | 99.9999%           |
+
+---
+
+# Encoding
+
+
+![](./2019-06-17-Introduction_to_Linux_for_Bioinformatics_files/figure/Phred.png)
+
+---
+
+
+# FASTQ
+
+```
+@NCCL-000000f0-ba51-4443-9096-3fd0e846a363/1
+GATATGGGTGAATATAGAAAAGTCTTCAAATAAAAAAATA
++
+cccccghhhghhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+@NCCL-00000acb-689a-4a96-8a0c-2b4de1c1e294/1
+CATATTTTGGTTATGTTGTAAAATTTCTTCACTCTGAATG
++
+caac_eebec[_g^b[egghhghhgPeggehhfghhfdhd
+@NCCL-00000aed-7f8d-46b6-be65-ef860566b017/1
+GGTGGTAGAATGTCCAGATGAAAGCTTCATTCAACCCATC
++
+_a[c`gP[e_dgghgdebfgdbeb^_f_ffdg^bPbdgge
+@NCCL-00000bf3-b23f-4649-811f-6a58cc1507cd/1
+GTGTCCTTCCCTTCTTCCTATCCTCTGCCACTGCCTCGCT
++
+ccccchhhhhhhhhhhhhhhhghhhhghhhhh^ghgghhh
+```
+
+---
+
+# Quick Quitz
+
+1. How many reads in `/opt/data/Illumina_normal_R1.fq.gz` file?
+
+Could you give me an answer using one line command?
+
+(5 mins)
+
+---
+
+
+# Quick Quitz
+
+1. How many reads in `/opt/data/Illumina_normal_R1.fq.gz` file?
+
+- [How to count fastq reads](https://www.biostars.org/p/139006/)
+
+```bash
+#yourfile.fastq  
+echo $(cat yourfile.fastq|wc -l)/4|bc
+
+#yourfile.fastq.gz
+echo $(zcat yourfile.fastq.gz|wc -l)/4|bc
+```
+
+
+---
+
+
+# Command line: echo
+
+## Display line of text/string that are passed as an argument .
+
+
+```bash
+echo -e "Geeks \bfor \bGeeks"
+```
+
+.footnote[
+[1] [echo command in Linux with Examples](https://www.geeksforgeeks.org/echo-command-in-linux-with-examples/)
+]
+
+---
+
+# Command line: cat and zcat
+
+```bash
+cat /home/admin/database/reference/human/hg19/chr1.fa
+zcat /opt/data/Illumina_normal_R1.fq.gz
+```
+Writing context to standard output.
+
+`zcat` is a command line utility for viewing the contents of a compressed file without literally uncompressing it.
+
+---
+
+# Command line: bc
+
+## command line calculator
+
+`bc` command is used for command line calculator. It is similar to basic calculator by using which we can do basic mathematical calculations.
+
+
+```bash
+echo "12+5" | bc
+echo "10^2" | bc
+```
+
+
+.footnote[
+[1] [bc command in Linux with examples](https://www.geeksforgeeks.org/bc-command-linux-examples/)
+]
+
+
+---
+
+# Single end vs Paired end
+
+
+.center[&lt;img src="https://www.yourgenome.org/sites/default/files/images/illustrations/bioinformatics_single-end_pair-end_reads_yourgenome.png" width="350"&gt;]
+.footnote[
+[1] [Question: paired end illumina reads](https://www.biostars.org/p/162806/)
+]
+
+---
+
+# Quality Control
+
+.center[&lt;img src="https://blog.omictools.com/wp-content/uploads/2017/11/NGS-QC-figure-omictools.png" width="550"&gt;]
+
+.footnote[
+[1] [Best bioinformatics software for RNA-seq quality control](https://omictools.com/blog/your-top-3-rna-seq-quality-control-tools)
+]
+---
+
+
+# Quality Control
+
+## tools 
+
+**1.FASTQC** (https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
+
+A quality control tool for high throughput sequence data.
+
+--
+
+**2.FASTX-Toolkit** (http://hannonlab.cshl.edu/fastx_toolkit/)
+
+The FASTX-Toolkit is a collection of command line tools for Short-Reads FASTA/FASTQ files preprocessing.
+
+--
+
+**3.FASTP** (https://github.com/OpenGene/fastp)
+
+An ultra-fast all-in-one FASTQ preprocessor (QC/adapters/trimming/filtering/splitting/merging...)
+
+
+---
+
+#  Command line: wget
+
+## Download files from website/ftp
+
+- `wget` is the non-interactive network downloader
+
+```bash
+wget -c https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.9.zip
+
+```
+
+.footnote[
+[1] [Wget command in Linux/Unix](https://www.geeksforgeeks.org/wget-command-in-linux-unix/)
+]
+
+
+# Command line: unzip and gunzip
+
+## Unzip file
+
+
+```bash
+unzip fastqc_v0.11.9.zip
+```
+
+---
+
+# Install source code
+
+- 
+```bash
+cd package-directory
+```
+- find README or Install related document, then **read it**!
+- 
+```bash
+chmod 755 fastqc
+```
+
+
+---
+
+
+# Create directory and symbolic link
+
+```bash
+cd ~
+mkdir -p ./project/out
+mkdir -p ./project/tmp
+mkdir -p ./project/src
+mkdir -p ./project/in
+
+
+cd ./project/in
+
+ln -rs /opt/data/*.gz ./
+```
+
+The `ln` command is a standard Unix command utility used to create a hard link or a symbolic link to an existing file. 
+
+- `-s, --symbolic` make symbolic links instead of hard links
+- `-r, --relative` create symbolic links relative to link location
+
+---
+
+# File Path
+
+### Absolute Path
+
+```bash
+/home/admin/software/FastQC/fastqc -t 1 \
+-o /home/yulijia/project/out \
+--noextract \
+-d /home/yulijia/project/tmp \
+-f fastq \
+/home/admin/ILLUMINA_FASTQ/cancer_R1.fq.gz \
+/home/admin/ILLUMINA_FASTQ/cancer_R2.fq.gz 
+```
+
+An absolute path is defined as the specifying the location of a file or directory from the root directory(`/`). &lt;sup&gt;1&lt;/sup&gt;
+To write an absolute path-name:
+- Start at the root directory (`/`) and work down.
+- Write a slash (`/`) after every directory name (last one is optional)
+
+
+.footnote[
+[1] [Absolute and Relative Pathnames in UNIX](https://www.geeksforgeeks.org/absolute-relative-pathnames-unix/)
+]
+---
+
+# File Path
+
+### Relative Path
+
+```bash
+/home/admin/software/FastQC/fastqc -t 1 \
+-o ../out \
+--noextract \
+-d ../tmp \
+-f fastq \
+../in/cancer_R1.fq.gz \
+../in/cancer_R2.fq.gz 
+```
+
+Relative path is defined as the path related to the present working directly(`pwd`). It starts at your current directory and never starts with a `/` .
+
+---
+
+# FASTQC
+
+```bash
+/home/admin/software/FastQC/fastqc -t 1 \
+-o /home/yulijia/project/out \
+--noextract \
+-d /home/yulijia/project/tmp \
+-f fastq \
+/home/admin/ILLUMINA_FASTQ/cancer_R1.fq.gz \
+/home/admin/ILLUMINA_FASTQ/cancer_R2.fq.gz 
+```
+
+
+- `-t --threads`
+
+Specifies the number of files which can be processed
+simultaneously.  Each thread will be allocated 250MB of
+memory so you shouldn't run more threads than your
+available memory will cope with, and not more than
+6 threads on a 32 bit machine
+
+
+---
+
+# FASTQC
+
+```bash
+/home/admin/software/FastQC/fastqc -t 1 \
+-o /home/yulijia/project/out \
+--noextract \
+-d /home/yulijia/project/tmp \
+-f fastq \
+/home/admin/ILLUMINA_FASTQ/cancer_R1.fq.gz \
+/home/admin/ILLUMINA_FASTQ/cancer_R2.fq.gz 
+```
+
+- `-o --outdir`
+
+Create all output files in the specified output directory.
+Please note that this directory must exist as the program
+will not create it.  If this option is not set then the 
+output file for each sequence file is created in the same
+directory as the sequence file which was processed.
+
+
+---
+
+# FASTQC
+
+```bash
+/home/admin/software/FastQC/fastqc -t 1 \
+-o /home/yulijia/project/out \
+--noextract \
+-d /home/yulijia/project/tmp \
+-f fastq \
+/home/admin/ILLUMINA_FASTQ/cancer_R1.fq.gz \
+/home/admin/ILLUMINA_FASTQ/cancer_R2.fq.gz 
+```
+
+- `--noextract`
+
+Do not uncompress the output file after creating it.  You
+should set this option if you do not wish to uncompress
+the output when running in non-interactive mode.
+
+---
+
+# FASTQC
+
+```bash
+/home/admin/software/FastQC/fastqc -t 1 \
+-o /home/yulijia/project/out \
+--noextract \
+-d /home/yulijia/project/tmp \
+-f fastq \
+/home/admin/ILLUMINA_FASTQ/cancer_R1.fq.gz \
+/home/admin/ILLUMINA_FASTQ/cancer_R2.fq.gz 
+```
+
+- `-d --dir` 
+
+Selects a directory to be used for temporary files written when
+generating report images. Defaults to system temp directory if
+not specified.
+
+---
+
+# FASTQC
+
+```bash
+/home/admin/software/FastQC/fastqc -t 1 \
+-o /home/yulijia/project/out \
+--noextract \
+-d /home/yulijia/project/tmp \
+-f fastq \
+/home/admin/ILLUMINA_FASTQ/cancer_R1.fq.gz \
+/home/admin/ILLUMINA_FASTQ/cancer_R2.fq.gz 
+```
+
+- `-f --format` 
+
+Bypasses the normal sequence file format detection and forces the program to use the specified format. Valid formats are bam, sam, bam_mapped, sam_mapped and fastq.
+
+---
+
+# FASTQC
+
+```bash
+/home/admin/software/FastQC/fastqc -t 1 \
+-o /home/yulijia/project/out \
+--noextract \
+-d /home/yulijia/project/tmp \
+-f fastq \
+/home/admin/ILLUMINA_FASTQ/cancer_R1.fq.gz \
+/home/admin/ILLUMINA_FASTQ/cancer_R2.fq.gz 
+```
+
+```bash
+SYNOPSIS
+
+fastqc [-o output dir] [--(no)extract] [-f fastq|bam|sam] 
+       [-c contaminant file] seqfile1 .. seqfileN
+```
+
+---
+
+# Quiz
+
+1. Run FastQC for all the data in `/opt/data` directory.
+
+2. Try to download fastp and install it in your `/home/yourname` directory.
+
+---
+
+.footnote[
+* All pictures without footnote are getting from Wikipedia or browser snapshots.
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

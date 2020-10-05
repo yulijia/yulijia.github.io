@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>A beginners guide to Call SNPs and indels: Part II</title>
+    <title>A Beginners Guide to Call Somatic Mutation</title>
     <meta charset="utf-8" />
-    <meta name="author" content="俞丽佳" />
+    <meta name="author" content="Lijia Yu @ NCCL in China" />
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
     <script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
@@ -15,63 +15,26 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# A beginners guide to Call SNPs and indels: Part II
-## <em>Mark Duplicates and Base (Quality Score) Recalibration</em>
-### 俞丽佳
-### 2019/07/31<br/>(updated: 2020-10-04)
+# A Beginners Guide to Call Somatic Mutation
+## Part III
+### Lijia Yu @ NCCL in China
+### 2020/10/04<br/>(updated: 2020-10-04)
 
 ---
-
 
 
 # Outline
 
-1. Review
-2. Mark Duplicates
-3. Base (Quality Score) Recalibration
+0. Review
+1. Reference genome
+2. SAM and BAM
+3. Mark Duplicates 
 
 ---
 
+# Answer the Quiz 
 
-### Q1: How to create a new directory with multiple subdirectories? 
-
-```bash
-cd ~
-mkdir ./project
-mkdir ./project/out
-mkdir ./tmp
-mkdir ./project/src
-mkdir ./project/in
-```
-
-```bash
-mkdir -p ./project/{in,out,src,tmp}
-```
-
----
-
-### Q2: What is src stand for ?
-
-```
-.
-├── in
-├── out
-├── src
-└── tmp
-
-```
-
-- in: input (.fq.gz)
-- out: output (.bam)
-- src: source code (script.sh)
-
-
-Always run the code from `src` directory.
-
-
----
-
-### Q3. How to use pipe?
+## How to use pipe?
 
 ```bash
 java -Xmx4G -jar trimmomatic-0.36.jar PE \
@@ -82,48 +45,64 @@ java -Xmx4G -jar trimmomatic-0.36.jar PE \
 ../out/normal_R1.trimed.fq.gz \
 ../out/normal_R1.unpaired.fq.gz \
 ../out/normal_R2.trimed.fq.gz \
-../out/normal_R2.unpaired.fq.gz TOPHRED33 |\
-bwa mem -M -t 4\
+../out/normal_R2.unpaired.fq.gz TOPHRED33 
+
+bwa mem -M -t 4 \
 /home/admin/database/reference/hg19/ucsc.hg19.fasta \
-../out/normal_R1.trimed.fq.gz \ 
+../out/normal_R1.trimed.fq.gz \
 ../out/normal_R2.trimed.fq.gz |\
 samtools sort -o ../out/normal.sorted.bam -
-
 ```
 
 ---
 
-### Q3. How to use pipe?
+# Reference genome version
 
-```bash
-$BWA mem ... | $SAMTOOLS sort ...
-command_1 | command_2 | command_3 | .... | command_N
-```
+- GRCh37: Genome Reference Consortium
+    - unlocalized sequences
+    - unplaced sequences
+    - alternate loci
+    - 1,..,22,X,Y,MT
+- GRCh37lite: Genome Reference Consortium
+    - 1,..,22,X,Y,MT
+- hg19: UCSC
+    - chr*_random sequences
+    - chrUn_* sequences
+    - chr1,...,chr22,chrX,chrY,chrM()
+- b37: 1k genome phase 1
+    - unlocalized sequences
+    - unplaced sequences
+    - 1,..,22,X,Y,MT
+- hs37d5: 1k genome phase 2 (**decoy** sequence)
+    - unlocalized sequences
+    - unplaced sequences
+    - 1,..,22,X,Y,MT
+    - human herpesvirus 4 type 1 sequence, etc.
+- GRCh38: Genome Reference Consortium
+- hg38: UCSC
 
-Pipe is used to combine two or more commands, and in this, the output of one command acts as input to another command, and this command’s output may act as input to the next command and so on.
-
-A pipe is a form of redirection (transfer of &lt;u&gt;standard output&lt;/u&gt; to some other destination) that is used in Linux and other Unix-like operating systems to send the output of one command/program/process to another command/program/process for further processing. 
-
-
-.footnote[
-[1][Piping in Unix or Linux](https://www.geeksforgeeks.org/piping-in-unix-or-linux/)
-]
 ---
 
-# Pipeline
+# Reference genome
 
-<div id="htmlwidget-379c25f30818308ed57e" style="width:504px;height:504px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-379c25f30818308ed57e">{"x":{"diagram":"digraph flowchart {\n      # node definitions with substituted label text\n      node [fontname = Helvetica, shape = rectangle]        \n      tab1 [label = \"Quality Control: fastQC\"]\n      tab2 [label = \"Phred 64 to 33: Trimmomatic\"]\n      tab3 [label = \"Map to Reference: Burrows-Wheeler Aligner\"]\n      tab4 [label = \"Mark Duplicates: ??\"]\n      tab5 [label = \"Recalibrate base quality score: ??\"]\n\n      # edge definitions with the node IDs\n      tab1 -> tab2 -> tab3 -> tab4 -> tab5;\n      }","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+- If you map reads to GRCh37 or hg19, use `hs37-1kg`:
 
+&lt;ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/technical/
+reference/human_g1k_v37.fasta.gz&gt;
 
----
+- If you map to GRCh37 and believe decoy sequences help with better variant calling, use `hs37d5`:
 
-# GATK workflow
+&lt;ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/technical/
+reference/phase2_reference_assembly_sequence/hs37d5.fa.gz&gt;
 
-![](./2019-07-31-A_beginners_guide_to_Call_SNPs_and_indels_Part_II_files/figure/GATKworkflows.png)
+- If you map reads to GRCh38 or hg38, use the following:
+
+&lt;ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/001/405/
+GCA_000001405.15_GRCh38/seqs_for_alignment_pipelines.ucsc_ids/
+GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz&gt;
 
 .footnote[
-[1][Introduction to Variant Discovery with GATK Best Practices](https://qcb.ucla.edu/wp-content/uploads/sites/14/2016/03/GATKwr12-1-GATK_primer.pdf)
+[1][Which human reference genome to use?](https://lh3.github.io/2017/11/13/which-human-reference-genome-to-use)
 ]
 
 ---
@@ -132,8 +111,7 @@ A pipe is a form of redirection (transfer of &lt;u&gt;standard output&lt;/u&gt; 
 
 
 .center[
-![](https://us.v-cdn.net/5019796/uploads/editor/f4/uuzmf2cbau1y.png)
-]
+![](https://us.v-cdn.net/5019796/uploads/editor/f4/uuzmf2cbau1y.png)]
 
 SAM stands for &lt;u&gt;Sequence Alignment Map&lt;/u&gt; and is described in the standard specification [here](http://samtools.github.io/hts-specs/). BAM and CRAM are both compressed forms of SAM; BAM (for Binary Alignment Map) is a lossless compression while CRAM can range from lossless to lossy depending on how much compression you want to achieve (up to very much indeed). 
 
@@ -183,6 +161,14 @@ The presence of the @RG tags indicate the presence of read groups. Each read gro
 
 
 [1][Introduction to Variant Discovery with GATK Best Practices](https://qcb.ucla.edu/wp-content/uploads/sites/14/2016/03/GATKwr12-1-GATK_primer.pdf)
+
+---
+
+# Pipeline: [Data pre-processing for variant discovery](https://gatk.broadinstitute.org/hc/en-us/articles/360035535912)
+
+<div id="htmlwidget-9bee415cc47b37e0f9f7" style="width:504px;height:504px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-9bee415cc47b37e0f9f7">{"x":{"diagram":"digraph flowchart {\n      # node definitions with substituted label text\n      node [fontname = Helvetica, shape = rectangle] \n      tab1 [label = \"Quality Control: fastQC\"]\n      tab2 [label = \"Quality Control and filtering: FASTP\"]\n      tab3 [label = \"Phred 64 to 33: Trimmomatic\"]\n      tab4 [label = \"Map to Reference: Burrows-Wheeler Aligner\"]\n      tab5 [label = \"Mark Duplicates: ??\"]\n      tab6 [label = \"Base Recalibration: ??\"]\n\n      # edge definitions with the node IDs\n      tab1 -> tab3 -> tab4 -> tab5 -> tab6;\n      tab2 -> tab4;\n      tab2 -> tab3;\n      }","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+
 ---
 
 # Genome Analysis Toolkit
@@ -226,9 +212,20 @@ The presence of the @RG tags indicate the presence of read groups. Each read gro
  
 
 .center[
-![](./2019-07-31-A_beginners_guide_to_Call_SNPs_and_indels_Part_II_files/figure/duplication.png) 
-]
+![](./2019-07-31-A_beginners_guide_to_Call_SNPs_and_indels_Part_II_files/figure/duplication.png)]
 
+---
+
+# MarkDuplicates
+
+```bash
+/home/admin/software/gatk-4.1.0.0/gatk \
+--java-options "-Xmx4G -Djava.io.tmpdir=./tmp"  \
+MarkDuplicates \
+-I Input.sorted.bam \
+-O Output.sortedRMdup.bam \
+-M Output.marked_dup_metrics.txt
+```
 
 
 ---
@@ -250,72 +247,26 @@ This is a Spark implementation of Picard MarkDuplicates that allows the tool to 
 ]
 ---
 
-# Local realignment around indels corrects mapping errors
+# Base Quality Score Recalibration (BQSR)
 
-.center[&lt;img src="2019-07-31-A_beginners_guide_to_Call_SNPs_and_indels_Part_II_files/figure/indel_1.png"&gt;]
-
-
-| position | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 
-|------------|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Reference| C | A | T | T | T | T | T | T | T | C | T | A | A | G |
-| group 1 |...| C | A | T | T | T | T | T | T |C | T | A | A | G |
-| group 2 | C | A | T | T | T | T | T | T |C | T | A | A | G |...|
-
----
-
-# Local realignment around indels corrects mapping errors
-
-.center[&lt;img src="2019-07-31-A_beginners_guide_to_Call_SNPs_and_indels_Part_II_files/figure/indel_2.png" width="550"&gt;]
-
-| position | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 
-|------------|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Reference| C | A | T | T | T | T | T | T | T | C | T | A | A | G |
-| group 1 | C | A | - | T | T | T | T | T | T |C | T | A | A | G |
-| group 2 | C | A | - | T | T | T | T | T | T |C | T | A | A | G |
----
-
-# RealignerTargetCreator and IndelRealigner (GATK3, retired)
-
-```bash
- java -jar GenomeAnalysisTK.jar \
-   -T RealignerTargetCreator \
-   -R reference.fasta \
-   -I input.bam \
-   --known indels.vcf \
-   -o forIndelRealigner.intervals
-
- java -jar GenomeAnalysisTK.jar \
-   -T IndelRealigner \
-   -R reference.fasta \
-   -I input.bam \
-   -known indels.vcf \
-   -targetIntervals intervalListFromRTC.intervals \
-   -o realignedBam.bam
-
-```
-
-
-.footnote[
-[1] [RealignerTargetCreator](https://software.broadinstitute.org/gatk/documentation/tooldocs/3.8-0/org_broadinstitute_gatk_tools_walkers_indels_RealignerTargetCreator.php)
-
-[2] [IndelRealigner](https://software.broadinstitute.org/gatk/documentation/tooldocs/3.8-0/org_broadinstitute_gatk_tools_walkers_indels_IndelRealigner.php)
-]
-
----
-
-# Base (Quality Score) Recalibration
- 
- 
 ![](./2019-07-31-A_beginners_guide_to_Call_SNPs_and_indels_Part_II_files/figure/Recalibration.png) 
 
-[1][Introduction to Variant Discovery with GATK Best Practices](https://qcb.ucla.edu/wp-content/uploads/sites/14/2016/03/GATKwr12-1-GATK_primer.pdf)
- 
+
+the scores produced by the machines are subject to various sources of systematic (non-random) technical error, leading to over- or under-estimated base quality scores in the data.
+
+[1][Base Quality Score Recalibration (BQSR)](https://gatk.broadinstitute.org/hc/en-us/articles/360035890531)
 ---
 
-# Base (Quality Score) Recalibration: BaseRecalibrator
+# BQSR: How does it work?
+
+- `BaseRecalibrator` builds the model:
+`BaseRecalibrator` tool builds a model of covariation based on the input data and a set of known variants, producing a recalibration file.
+
+
 
 ```bash
-/home/admin/software/gatk-4.1.0.0/gatk BaseRecalibrator \
+/home/admin/software/gatk-4.1.0.0/gatk \
+BaseRecalibrator \
 -I my_reads.bam \
 -R reference.fasta \
 --known-sites dbsnp_138.hg19.vcf \
@@ -330,63 +281,33 @@ ExAc, gnomAD, or dbSNP resources can be used as known sites of variation.
 
 We assume that all reference mismatches we see are therefore errors and indicative of poor base quality. 
 
-.footnote[
-[1] [BaseRecalibrator](https://software.broadinstitute.org/gatk/documentation/tooldocs/current/org_broadinstitute_hellbender_tools_walkers_bqsr_BaseRecalibrator.php)
-]
+
+[1][Base Quality Score Recalibration (BQSR)](https://gatk.broadinstitute.org/hc/en-us/articles/360035890531)
 
 ---
 
-# Resource bundle
+# BQSR: How does it work?
 
-- `dbSNP 138`
-   + evaluation of dbSNP rate and Ti/Tv values at novel sites.
-   
-
-
-- `Mills_and_1000G_gold_standard`
-   + best set of known indels to be used for local realignment
-
-
-- `1000G_phase1.indels`
-   + best set of known indels to be used for local realignment
-   
-
-
-- `1000G_phase1.snps.high_confidence`
-   + genotype refinement
-
-
-The GATK resource bundle is a collection of standard files for working with human resequencing data with the GATK.
-
-.footnote[
-[1] [Resource Bundle: Reference materials for human analysis](https://software.broadinstitute.org/gatk/documentation/article.php?id=11017)
-]
-
-
----
-
-# Base (Quality Score) Recalibration: ApplyBQSR
-
+- `ApplyBQSR` adjusts the scores:
+`ApplyBQSR` tool adjusts the base quality scores in the data based on the model, producing a new BAM file.
 
 ```bash
-
-/home/admin/software/gatk-4.1.0.0/gatk ApplyBQSR \
--R reference.fasta \
--I input.bam \
---bqsr-recal-file recal_data.table \
+/home/admin/software/gatk-4.1.0.0/gatk \
+--java-options "-Xmx4G -Djava.io.tmpdir=./tmp" \
+ApplyBQSR \
+-R reference.fasta  \
+-I Input.sortedRMdup.bam \
+-bqsr recal_data.table \
 -L ../in/Illumina.bed \
--O output.bam
-   
+--add-output-sam-program-record \
+--static-quantized-quals 10 \
+--static-quantized-quals 20 \
+--static-quantized-quals 30 \
+-O Output.recal.bam
 ```
 
-It recalibrates the base qualities of the input reads based on the recalibration table produced by the BaseRecalibrator tool, and outputs a recalibrated BAM or CRAM file.
-
-
-.footnote[
-[1] [ApplyBQSR](https://software.broadinstitute.org/gatk/documentation/tooldocs/current/org_broadinstitute_hellbender_tools_walkers_bqsr_ApplyBQSR.php)
-]
-
 ---
+
 
 # Quiz
 

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>A Beginners Guide to Call Somatic Mutation</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Lijia Yu @ NCCL in China" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# A Beginners Guide to Call Somatic Mutation
+## Part II
+### Lijia Yu @ NCCL in China
+### 2020/10/03<br/>(updated: 2020-10-05)
+
+---
+
+
+# Outline
+
+1. Quality Control
+2. Alignment/Mapping
+
+---
+
+# FASTQC
+
+- [Good Illumina Data](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/good_sequence_short_fastqc.html)
+- [Bad Illumina Data](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/bad_sequence_fastqc.html)
+
+| Measure                           | Value                   |
+|-----------------------------------|-------------------------|
+| Filename                          | good_sequence_short.txt |
+| File type                         | Conventional base calls |
+| Encoding                          | Illumina 1.5            |
+| Total Sequences                   | 250000                  |
+| Sequences flagged as poor quality | 0                       |
+| Sequence length                   | 40                      |
+| %GC                               | 45                      |
+
+---
+
+# [FASTP](https://github.com/OpenGene/fastp)
+
+```bash
+fastp -i in.R1.fq.gz -I in.R2.fq.gz -o out.R1.fq.gz -O out.R2.fq.gz
+```
+
+---
+
+# Command line: screen/tmux
+
+The screen package is pre-installed on most Linux distros nowadays. You can check if it is installed on your system by typing:
+
+```bash
+screen --version
+```
+
+##  Basic Linux Screen Usage
+
+Below are the most basic steps for getting started with screen:
+
+- On the command prompt, type `screen`.
+- Run the desired program.
+- Use the key sequence `Ctrl-a` + `Ctrl-d` to detach from the screen session.
+- Reattach to the screen session by typing `screen -r`.
+
+.footnote[
+[1] [How To Use Linux Screen](https://linuxize.com/post/how-to-use-linux-screen/)
+]
+
+---
+
+# Command line: screen/tmux
+
+Tmux is better than screen.
+
+1. Starting a Named tmux Session
+```bash
+tmux new -s geek-1
+```
+2. Detaching and Attaching Sessions `Ctrl+B`, and then `D`.
+3. To attach a detached session: `tmux attach-session -t geek-1`
+
+.footnote[
+[1] [How to Use tmux on Linux (and Why It’s Better Than Screen)](https://www.howtogeek.com/671422/how-to-use-tmux-on-linux-and-why-its-better-than-screen/)
+]
+
+---
+
+# [Trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic): a flexible trimmer for Illumina sequence data
+
+- Removal of technical sequences
+- Quality filtering
+- Phred 64 to Phred 33
+
+
+```bash
+# Convert Phred64 to Phred33
+java -Xmx4G \
+-jar /home/admin/software/Trimmomatic-0.36/trimmomatic-0.36.jar PE \
+-threads 1 \
+-phred64 \
+../in/cancer_R1.fq.gz \
+../in/cancer_R2.fq.gz \
+../out/cancer_R1.trimed.fq.gz \
+../out/cancer_R1.unpaired.fq.gz \
+../out/cancer_R2.trimed.fq.gz \
+../out/cancer_R2.unpaired.fq.gz \
+TOPHRED33
+```
+
+---
+
+
+# Alignment/Mapping
+
+
+.center[&lt;img src="https://www.ebi.ac.uk/training/online/sites/ebi.ac.uk.training.online/files/resize/user/18/Figure19-700x527.png" width="550"&gt;]
+
+
+.footnote[
+[1] [Read mapping or alignment](https://www.ebi.ac.uk/training/online/course/functional-genomics-ii-common-technologies-and-data-analysis-methods/read-mapping-or)
+]
+
+---
+
+# Alignment/Mapping
+
+
+- When studying an organism **with** &lt;u&gt;a reference genome&lt;/u&gt;, it is possible to infer which transcripts are expressed by mapping the reads to the reference genome (genome mapping) or transcriptome (transcriptome mapping). Mapping reads to the genome requires no knowledge of the set of transcribed regions or the way in which exons are spliced together. This approach allows the discovery of new, unannotated transcripts.
+ 
+- When working on an organism **without** &lt;u&gt;a reference genome&lt;/u&gt;, reads need to be assembled first into longer contigs (de novo assembly). These contigs can then be considered as the expressed transcriptome to which reads are re-mapped for quantification.
+
+
+.footnote[
+[1] [Read mapping or alignment](https://www.ebi.ac.uk/training/online/course/functional-genomics-ii-common-technologies-and-data-analysis-methods/read-mapping-or)
+]
+
+---
+
+# Alignment/Mapping
+
+## Tools
+
+- BWA (Burrows-Wheeler Aligner, recommand to Illumina/BGI user)
+
+BWA is a software package for mapping low-divergent sequences against a large reference genome, such as the human genome.
+
+- Novoalign
+
+Powerful tool designed for mapping of short reads onto a reference genome from &lt;u&gt;Illumina, Ion Torrent, and 454 NGS platforms.&lt;/u&gt;
+
+- TMAP (recommand to Ion Torrent user)
+
+TMAP (torrent mapping alignment program) is a fast and accurate alignment software for short and long nucleotide sequences produced by next-generation sequencing technologies.
+
+---
+
+# Alignment/Mapping
+
+## Tools 
+
+- Bowtie2
+
+Bowtie 2 is an ultrafast and memory-efficient tool for aligning sequencing reads to long reference sequences. 
+
+- STAR
+
+STAR is ultrafast universal RNA-seq aligner.
+
+---
+
+# De novo sequence assemblers
+
+- ABySS
+
+A de novo, parallel, paired-end sequence assembler designed for the assembly of short reads. There are two versions: ABySS( genomic) and Trans-ABySS (transcriptomic).
+
+- Trinity
+
+Trinity utilizes a three step process to produce high-quality transcriptome assemblies. This method has been found to reconstruct high quality transcriptomes.
+
+- HGAP/Falcon
+
+HGAP was the first long read assembler,It was designed mainly for haploid organisms. Falcon is a long read assembler designed by Pacific Biosciences to work on diploid organisms.
+
+
+.footnote[
+[1] [De novo sequence assemblers](https://en.wikipedia.org/wiki/De_novo_sequence_assemblers)
+]
+
+---
+
+# [BWA](https://github.com/lh3/bwa) mapping 
+
+
+```bash
+Usage: bwa mem [options] &lt;idxbase&gt; &lt;in1.fq&gt; [in2.fq]
+```
+
+```bash
+/home/admin/software/bwa-0.7.12/bwa mem -M\
+-t 1\
+/home/admin/database/reference/hg19/ucsc.hg19.fasta \
+../out/cancer_R1.trimed.fq.gz \
+../out/cancer_R2.trimed.fq.gz  &gt; ../out/cancer.sam
+```
+
+
+- `mem`  BWA-MEM algorithm
+- `-M`   mark shorter split hits as secondary
+
+---
+
+
+# Samtools sorting
+
+
+```bash
+Usage:   samtools &lt;command&gt; [options]
+```
+
+```bash
+/home/admin/software/samtools-1.9/samtools sort \
+-o ../out/cancer.sorted.bam  ../out/cancer.sam
+```
+
+- `sort` sort alignment file
+
+---
+
+# BWA mapping and Samtools sorting
+
+```bash
+/home/admin/software/bwa-0.7.12/bwa mem -M \
+-t 1 \
+-R "@RG\tID:H3FCTDSXY.2\tLB:hg19\tPL:ILLUMINA\tPU:H3FCTDSXY.2.cancer\tSM:cancer" \
+/home/admin/database/reference/hg19/ucsc.hg19.fasta \
+../out/cancer_R1.trimed.fq.gz \
+../out/cancer_R2.trimed.fq.gz |\
+/home/admin/software/samtools-1.9/samtools view -Sb - |\
+/home/admin/software/samtools-1.9/samtools sort \
+-o ../out/cancer.sorted.bam -
+```
+### Piping in Unix or Linux
+
+```bash
+$BWA mem ... | $SAMTOOLS sort ...
+command_1 | command_2 | command_3 | .... | command_N 
+```
+
+Pipe is used to combine two or more commands, and in this, the output of one command acts as input to another command, and this command’s output may act as input to the next command and so on. 
+
+---
+
+# Quiz
+
+1.Try to preprocess and map the normal sample (FASTQ file) to reference genome hg19.
+
+Please write your codes in a script file (script.sh).
+
+
+2.Please explain the meaning of Timmomatic code line by line.
+
+```bash
+# Convert Phred64 to Phred33
+java -Xmx4G \
+-jar /home/admin/software/Trimmomatic-0.36/trimmomatic-0.36.jar PE \
+-threads 1 \
+-phred64 \
+../in/cancer_R1.fq.gz \
+../in/cancer_R2.fq.gz \
+../out/cancer_R1.trimed.fq.gz \
+../out/cancer_R1.unpaired.fq.gz \
+../out/cancer_R2.trimed.fq.gz \
+../out/cancer_R2.unpaired.fq.gz \
+TOPHRED33
+```
+
+---
+
+
+# Resource
+
+[1] [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)  
+
+[2] [Trimmomatic: A flexible read trimming tool for Illumina NGS data](http://www.usadellab.org/cms/?page=trimmomatic)
+
+[3] [BWA](https://github.com/lh3/bwa)
+
+[4] [Samtools](https://github.com/samtools/samtools)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

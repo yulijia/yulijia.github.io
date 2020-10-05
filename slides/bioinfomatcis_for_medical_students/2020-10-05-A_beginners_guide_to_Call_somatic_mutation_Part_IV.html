@@ -1,24 +1,20 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>A beginners guide to Call SNPs and Indels: Part III</title>
+    <title>A Beginners Guide to Call Somatic Mutation</title>
     <meta charset="utf-8" />
-    <meta name="author" content="俞丽佳" />
+    <meta name="author" content="Lijia Yu @ NCCL in China" />
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
-    <script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
-    <script src="libs/viz-1.8.2/viz.js"></script>
-    <link href="libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
-    <script src="libs/grViz-binding-1.0.6.1/grViz.js"></script>
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# A beginners guide to Call SNPs and Indels: Part III
-## <em>Call SNPs and Indel</em>
-### 俞丽佳
-### 2019/08/16<br/>(updated: 2020-10-03)
+# A Beginners Guide to Call Somatic Mutation
+## Part IV
+### Lijia Yu @ NCCL in China
+### 2020/10/05<br/>(updated: 2020-10-05)
 
 ---
 
@@ -26,7 +22,7 @@ class: center, middle, inverse, title-slide
 
 # Outline
 
-1. Review
+0. Review
 2. SNP calling: Mutect2
 3. VCF format
 4. Annotation: Annovar
@@ -34,7 +30,7 @@ class: center, middle, inverse, title-slide
 ---
 
 
-### Q1: Target Region BED file
+# Target Region BED file
 
 
 ![](./2019-08-16-A_beginners_guide_to_Call_SNPs_and_indels_Part_III_files/figure/BEDformat.png)
@@ -48,14 +44,6 @@ class: center, middle, inverse, title-slide
 [1][BED format](https://genome.ucsc.edu/FAQ/FAQformat.html#format1)
 ]
 
-
----
-
-# Pipeline 
-
-<div id="htmlwidget-33d9656fd76734e40fd6" style="width:504px;height:504px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-33d9656fd76734e40fd6">{"x":{"diagram":"digraph flowchart {\n      # node definitions with substituted label text\n      node [fontname = Helvetica, shape = rectangle]        \n      tab1 [label = \"Quality Control: fastQC\"]\n      tab2 [label = \"Phred 64 to 33: Trimmomatic\"]\n      tab3 [label = \"Map to Reference: Burrows-Wheeler Aligner\"]\n      tab4 [label = \"Sort BAM file\"]\n      tab5 [label = \"Add BAM header\"]\n      tab6 [label = \"Mark Duplicates: MarkDuplicatesSpark\"]\n      tab7 [label = \"Base Recalibration: BaseRecalibrator, ApplyBQSR\"]\n      tab8 [label = \"Make a BAM index\"]\n      tab9 [label = \"SNV and Indel Calling\"]\n\n      # edge definitions with the node IDs\n      tab1 -> tab3 -> tab5 -> tab6 -> tab7 -> tab8 -> tab9;\n      tab4 -> tab6;\n      tab2 -> tab3;\n      }","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
-
 ---
 
 # Workflow
@@ -68,18 +56,16 @@ class: center, middle, inverse, title-slide
 
 ---
 
-# Somatic mutation
+# Somatic short variant discovery (SNVs + Indels)
 
 
 .center[
-&lt;img src="https://ib.bioninja.com.au/_Media/somatic-vs-germline_med.jpeg" width="500"&gt;
+&lt;img src="./2020-10-05-A_beginners_guide_to_Call_somatic_mutation_Part_IV_files/figure/workflow.png" width="500"&gt;
 ]
 
-An alteration in DNA that occurs after conception.
 
 .footnote[
-[1] [Somatic vs Germline Mutations](https://ib.bioninja.com.au/standard-level/topic-3-genetics/33-meiosis/somatic-vs-germline-mutatio.html)
-]
+[1] [Somatic short variant discovery (SNVs + Indels)](https://gatk.broadinstitute.org/hc/en-us/articles/360035894731-Somatic-short-variant-discovery-SNVs-Indels-)]
 
 ---
 
@@ -103,8 +89,8 @@ An alteration in DNA that occurs after conception.
 
 - SNA (single-nucleotide alteration)
 
-
 ---
+
 
 # Make a BAM index file
 
@@ -120,9 +106,11 @@ If an output filename is given, the index file will be written to out.index. Oth
 
 [1][Samtools](http://www.htslib.org/doc/samtools.html)
 
+
 ---
 
 # Mutect2
+
 
 ```bash
 gatk --java-options "-Xmx8G" Mutect2 \
@@ -133,16 +121,18 @@ gatk --java-options "-Xmx8G" Mutect2 \
 -normal normal \
 --germline-resource af-only-gnomad.raw.sites.hg19.vcf.gz \
 -L ../in/Illumina.bed \
--O ../out/somatic.vcf
+-O ../out/somatic.vcf.gz
 ```
 
+
 ---
+
 
 # FilterMutectCalls
 
 ```bash
 gatk --java-options "-Xmx8G" FilterMutectCalls \
--V ../out/somatic.vcf \
+-V ../out/somatic.vcf.gz \
 -O ../out/somatic_filtered.vcf.gz
 ```
 
@@ -153,7 +143,6 @@ gatk --java-options "-Xmx8G" FilterMutectCalls \
 ]
 
 ---
-
 # VCF format: Meta-information lines
  
 ```

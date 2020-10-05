@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
   <head>
     <title>A beginners guide to Call SNPs and indels: Part I</title>
     <meta charset="utf-8" />
-    <meta name="author" content="Lijia Yu @ NCCL in China" />
+    <meta name="author" content="俞丽佳" />
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
   </head>
@@ -13,8 +13,8 @@ class: center, middle, inverse, title-slide
 
 # A beginners guide to Call SNPs and indels: Part I
 ## <em>Quality Control and Mapping</em>
-### Lijia Yu @ NCCL in China
-### 2019/06/28<br/>(updated: 2019-07-03)
+### 俞丽佳
+### 2019/06/28<br/>(updated: 2020-10-05)
 
 ---
 
@@ -693,6 +693,7 @@ Usage:   samtools &lt;command&gt; [options]
 ```bash
 /home/admin/software/bwa-0.7.12/bwa mem -M \
 -t 1 \
+-R "@RG\tID:H3FCTDSXY.2\tLB:hg19\tPL:ILLUMINA\tPU:H3FCTDSXY.2.cancer\tSM:cancer" \
 /home/admin/database/reference/hg19/ucsc.hg19.fasta \
 ../out/cancer_R1.trimed.fq.gz \
 ../out/cancer_R2.trimed.fq.gz |\
@@ -710,7 +711,7 @@ Pipe is used to combine two or more commands, and in this, the output of one com
 
 ---
 
-# Quitz
+# Quiz
 
 1.Try to preprocess and map the normal sample (FASTQ file) to reference genome hg19.
 
@@ -796,9 +797,25 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
     deleted = true;
   });
-})();</script>
-
-<script>
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
 (function() {
   var links = document.getElementsByTagName('a');
   for (var i = 0; i < links.length; i++) {
@@ -807,7 +824,23 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
   }
 })();
-</script>
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
 
 <script>
 slideshow._releaseMath = function(el) {
