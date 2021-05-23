@@ -20,6 +20,6 @@ avatar: yes
 
 > ### The truth was important, a healthy society should never have just one voice.
 
-> #### All knowledge is, in final analysis, history. All sciences are,in the abstract, mathematics. All judgements are, in their rationale, statistics.
+> #### All knowledge is, in final analysis, history. All sciences are, in the abstract, mathematics. All judgements are, in their rationale, statistics.
 
 **Contact Me:** yu AT lijiayu DOT net
