@@ -4,6 +4,11 @@ avatar: yes
 ---
 
 
+## China R Conference 2021 (in Chinese):
+
+- [Animations in R](./China-R-Conf-2021/Animations-in-R-2021.html "Animations-in-R")
+
+
 ## Bioinformatcis for medical students
 
 ### 2019
@@ -26,7 +31,7 @@ avatar: yes
 ## Perl Lecture:      
 - [Learning Perl](./learningPerl.html "Learning Perl") 
 
-## UCAS course presentation slides (Chinese):
+## UCAS course presentation slides (in Chinese):
 - [What's the biggest cell in the world](./BigCell.pdf "What's the biggest cell in the world")
 - [What is bioinformatics](./WhatisBioinformatics.pdf "What is bioinformatics")
 - [Statistical graph and data visualization](./StatisticalGraphandDataVsualization.pdf "Statistical graph and data visualization") (it contained some broken images)
