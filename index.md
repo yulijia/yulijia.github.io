@@ -18,7 +18,7 @@ avatar: yes
 
 > #### 独立之精神，自由之思想。
 
-> ### The truth was important, a healthy society should never have just one voice.
+> #### The truth was important, a healthy society should never have just one voice.
 
 > #### All knowledge is, in final analysis, history. All sciences are, in the abstract, mathematics. All judgements are, in their rationale, statistics.
 
